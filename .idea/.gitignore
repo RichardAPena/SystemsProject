@@ -1,13 +1,3 @@
 # Default ignored files
 /shelf/
 /workspace.xml
-
-*.class
-*.xml
-*.html
-out/
-.idea/
-.idea_modules/
-*.iml
-*.ipr
-*.iws
