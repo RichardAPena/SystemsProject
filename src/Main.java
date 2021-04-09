@@ -76,6 +76,7 @@ public class Main extends Application {
             }
         }
     }
+    //TODO: Get server streams running to be able to update client boards, load the server board to the client board
     public void initPlayerBoard(){ // went with GridPane, makes onMouseClick easier to update grid
         playerBoard.setPrefSize(8,8);
         playerBoard.setBackground(Background.EMPTY);
