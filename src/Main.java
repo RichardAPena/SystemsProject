@@ -21,6 +21,8 @@ public class Main extends Application {
     final private int PORT = 1234;
     final private int SCREEN_WIDTH = 1024;
     final private int SCREEN_HEIGHT = 768;
+    final private int cell_X = 128;
+    final private int cell_Y = 96;
 
     @Override
     public void start(Stage primaryStage) throws Exception{
@@ -48,14 +50,22 @@ public class Main extends Application {
 
     public void drawInitialBoardState(GraphicsContext gc) {
         // Board drawn to initial state
+        // Dimensions for 8x8 in our window is rect of length = 128 width = 96
+        for(int x = 0 ; x < 8; x++){
+            for (int y = 0 ; y < 8; y++){
+                if((x == 3 && y == 3) || (x == 4 && y == 4)){
+                    gc.setFill(Color.WHITE);
+                    gc.fillRect(x * cell_X, y * cell_Y, cell_X,cell_Y);
+                }
+                if ((x == 3 && y == 4) || (x == 4 && y == 3)){
+                    gc.setFill(Color.BLACK);
+                    gc.fillRect(x * cell_X, y * cell_Y, cell_X,cell_Y);
+                }
+                else{
+                    gc.strokeRect(x * cell_X, y * cell_Y, cell_X, cell_Y);
+                }
 
-        gc.setFill(Color.BLACK);
-        for(int x = 0 ; x <= SCREEN_WIDTH; x++){
-            for (int y = 0 ; y <= SCREEN_HEIGHT; y++){
-                gc.strokeRect(x, y, 128, 96);
-                y += 96;
             }
-            x += 128;
         }
     }
 }
