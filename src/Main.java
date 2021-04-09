@@ -12,11 +12,15 @@ import javafx.stage.Stage;
 
 public class Main extends Application {
 
+    //FIELDS
+    final private int SCREEN_WIDTH = 1024;
+    final private int SCREEN_HEIGHT = 768;
+
     @Override
     public void start(Stage primaryStage) throws Exception{
         //Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
         Group group = new Group();
-        Canvas canvas = new Canvas(1024, 768);
+        Canvas canvas = new Canvas(SCREEN_WIDTH, SCREEN_HEIGHT);
         GraphicsContext gc = canvas.getGraphicsContext2D();
         group.getChildren().add(canvas);
 
@@ -34,8 +38,14 @@ public class Main extends Application {
     }
 
     public void draw(GraphicsContext gc) {
-        // TODO
+        // Board drawn to initial state
         gc.setFill(Color.BLACK);
-        gc.fillRect(10, 10, 100, 100);
+        for(int x = 0 ; x <= SCREEN_WIDTH; x++){
+            for (int y = 0 ; y <= SCREEN_HEIGHT; y++){
+                gc.strokeRect(x, y, 128, 96);
+                y += 96;
+            }
+            x += 128;
+        }
     }
 }
