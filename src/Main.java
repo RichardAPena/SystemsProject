@@ -5,9 +5,12 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
 import java.io.DataInputStream;
@@ -23,25 +26,30 @@ public class Main extends Application {
     final private int SCREEN_HEIGHT = 768;
     final private int cell_X = 128;
     final private int cell_Y = 96;
+    private GridPane playerBoard = new GridPane();
+
 
     @Override
     public void start(Stage primaryStage) throws Exception{
         //Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
         Group group = new Group();
-        Pane pane  = new Pane();
         StackPane background = new StackPane();
         Canvas canvas = new Canvas(SCREEN_WIDTH, SCREEN_HEIGHT);
         GraphicsContext gc = canvas.getGraphicsContext2D();
-        background.getChildren().add(canvas);
-        group.getChildren().add(background);
-        background.setStyle("-fx-background-color: green");
+
+        //keeping it here, if you prefer handling graphics just revert it
+//        background.getChildren().add(canvas);
+//        group.getChildren().add(background);
+//        background.setStyle("-fx-background-color: green");
         // TODO: thread for draw
         // TODO: socket stuff
 
+        initPlayerBoard();
+        group.getChildren().add(playerBoard);
         primaryStage.setTitle("Othello");
         primaryStage.setScene(new Scene(group));
         primaryStage.show();
-        drawInitialBoardState(gc);
+//        drawInitialBoardState(gc);
     }
 
     public static void main(String[] args) {
@@ -67,5 +75,21 @@ public class Main extends Application {
 
             }
         }
+    }
+    public void initPlayerBoard(){ // went with GridPane, makes onMouseClick easier to update grid
+        playerBoard.setPrefSize(8,8);
+        playerBoard.setBackground(Background.EMPTY);
+        for(int x = 0; x < 8; x++){
+            for (int y = 0;y < 8; y++){
+                Rectangle tile = new Rectangle(cell_X,cell_Y);
+                tile.setStroke(Color.BLACK);
+                tile.setFill(Color.GREEN);
+                playerBoard.add(new StackPane(tile),x,y);
+            }
+        }
+        playerBoard.add(new StackPane(new Rectangle(cell_X,cell_Y,Color.WHITE)),3,3);
+        playerBoard.add(new StackPane(new Rectangle(cell_X,cell_Y,Color.WHITE)),4,4);
+        playerBoard.add(new StackPane(new Rectangle(cell_X,cell_Y,Color.BLACK)),3,4);
+        playerBoard.add(new StackPane(new Rectangle(cell_X,cell_Y,Color.BLACK)),4,3);
     }
 }
