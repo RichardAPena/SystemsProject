@@ -1,5 +1,6 @@
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
@@ -9,6 +10,9 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseDragEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
@@ -104,6 +108,37 @@ public class Main extends Application {
                 }
             } catch (Exception e) { e.printStackTrace(); }
         });
+
+
+
+        // TODO: Should constantly read in requests from the server and handle them (like server sending a new board or telling you its your turn)
+        Thread serverIn = new Thread(() -> {
+            while (true) {
+                try {
+                    String request = "";
+                    request = in.readLine();
+                    System.out.println("REQUEST: " + request);
+                } catch (Exception e) {
+                    //e.printStackTrace();
+                }
+            }
+        });
+
+        serverIn.start();
+
+        EventHandler<MouseEvent> mouseMove = mouseEvent -> {
+            double x = mouseEvent.getX();
+            double y = mouseEvent.getY();
+            System.out.println(x + " " + y);
+        };
+
+        EventHandler<MouseEvent> mouseClick = mouseEvent -> {
+                System.out.println("Clicked");
+        };
+
+        menu.addEventFilter(MouseEvent.MOUSE_MOVED, mouseMove);
+        menu.addEventFilter(MouseEvent.MOUSE_CLICKED, mouseClick);
+
         drawBoard.start();
         primaryStage.setTitle("Othello");
         primaryStage.setScene(menu);
