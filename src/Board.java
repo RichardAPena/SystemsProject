@@ -58,6 +58,13 @@ public class Board {
      */
     public boolean isValidMove(String player, int x, int y) {
         // TODO: check if move at (x,y) from player is valid
+        /*
+        Go to a corner
+        once u get there
+         */
+        if (!board[x][y].equals(".")) { // If the space is NOT empty, then its not a valid move
+            return false;
+        }
         String opponent;
         if (player.equals("X")) opponent = "O";
         else opponent = "X";
@@ -66,28 +73,54 @@ public class Board {
         int tempY = y;
 
         // Check RIGHT
-        tempX = 7; // TODO: AAAAAAAAAAAAAAAAAAAAAAAAAAAAaa
+        tempX = 7;
         while (tempX > x) {
+            if (board[tempX][y].equals(player)) {
+                return true;
+            } else if (board[tempX][y].equals(opponent)) {
+                break;
+            }
             tempX--;
-            break;
         }
         // Check UP-RIGHT
 
+
         // Check UP
+        tempY = 0;
+        while (tempY < y) {
+            tempY++;
+        }
 
         // Check UP-LEFT
 
         // Check LEFT
+        tempX = 0;
 
         // Check DOWN-LEFT
 
         // Check DOWN
+        tempY = 7;
 
         // Check DOWN-RIGHT
 
 
         // Else return false
         return false;
+    }
+
+    /**
+     * Use to check how many valid moves are available to a specified player (if none, pass)
+     * @param player the player to check
+     * @return number of valid moves available to player
+     */
+    public int numValidMoves(String player) {
+        int validMoves = 0;
+        for (int i=0; i<board.length; i++) {
+            for (int j=0; j<board[0].length; i++) {
+                if (isValidMove(player, j, i)) validMoves++;
+            }
+        }
+        return validMoves;
     }
 
     /**
