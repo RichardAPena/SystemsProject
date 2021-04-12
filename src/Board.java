@@ -7,17 +7,30 @@ public class Board {
     }
 
     public static void main(String[] args) {
-        Board gameBoard = new Board();
-        System.out.println(gameBoard.toString());
-        gameBoard.initialize();
-        System.out.println(gameBoard.toString());
-        gameBoard.makeMove("X", 0, 0);
-        System.out.println(gameBoard.toString());
-        gameBoard.makeMove("O", 7, 7);
-        System.out.println(gameBoard.toString());
-        gameBoard.makeMove("X", 3, 6);
-        System.out.println(gameBoard.toString());
+//        Board gameBoard = new Board();
+//        System.out.println(gameBoard.toString());
+//        gameBoard.initialize();
+//        System.out.println(gameBoard.toString());
+//        gameBoard.makeMove("X", 0, 0);
+//        System.out.println(gameBoard.toString());
+//        gameBoard.makeMove("O", 7, 7);
+//        System.out.println(gameBoard.toString());
+//        gameBoard.makeMove("X", 3, 6);
+//        System.out.println(gameBoard.toString());
+        String stringBoard =
+                        ". . . . . . . .\n" +
+                        ". . . . . . . .\n" +
+                        ". . . . . . . .\n" +
+                        ". . . O X . . .\n" +
+                        ". . . X O . . .\n" +
+                        ". . . . . . . .\n" +
+                        ". . . . . . . .\n" +
+                        ". . . . . . . .";
 
+        System.out.println("String board: \n" + stringBoard);
+        Board gameBoard = new Board();
+        gameBoard.fromString(stringBoard);
+        System.out.println("To string: \n" + gameBoard.toString());
     }
 
     /**
@@ -53,8 +66,9 @@ public class Board {
         int tempY = y;
 
         // Check RIGHT
-        while (true) {
-            tempX++;
+        tempX = 7; // TODO: AAAAAAAAAAAAAAAAAAAAAAAAAAAAaa
+        while (tempX > x) {
+            tempX--;
             break;
         }
         // Check UP-RIGHT
@@ -121,7 +135,7 @@ public class Board {
                 System.out.println("a");
             } else if (board[tempX][previousY].equals(opponent)) { // If the disk is an enemy, stop checking cuz u can't sandwich
                 break;
-            } else if (board[tempX][previousY].equals(player)) { // You sandwiched the opponent's disks, start flipping them
+            } else if (board[tempX][previousY].equals(player)) { // If a player disk is reached, flip disks in between
                 // TODO: start flipping stuff
             }
             tempX--;
@@ -155,7 +169,7 @@ public class Board {
                 System.out.println("b");
             } else if (board[previousX][tempY].equals(opponent)) { // Stop if you reach an enemy disk
                 break;
-            } else if (board[previousX][tempY].equals(player)) {
+            } else if (board[previousX][tempY].equals(player)) { // If a player disk is reached, flip disks in between
                 // TODO: start flipping stuff
             }
             tempY++;
@@ -269,11 +283,38 @@ public class Board {
         String output = "";
         for (int i=0; i<board.length; i++) { // Columns
             for (int j=0; j<board[0].length; j++) { // Rows
-                output += board[j][i] + " ";
+                output += board[j][i];
+                if (j<board[0].length-1) output += " ";
             }
-            output += "\n";
+            if (i<board.length-1) output += "\n";
         }
         return output;
+    }
+
+    /**
+     * Parses a String board into the String[][] board
+     * @param stringBoard board in String form
+     */
+    public void fromString(String stringBoard) {
+        /*
+        EXAMPLE:
+        . . . . . . . .
+        . . . . . . . .
+        . . . . . . . .
+        . . . O X . . .
+        . . . X O . . .
+        . . . . . . . .
+        . . . . . . . .
+        . . . . . . . .
+         */
+
+        String[] rows = stringBoard.split("\n");
+        for (int i=0; i<rows.length; i++) {
+            String[] values = rows[i].split(" ");
+            for (int j=0; j<values.length; j++) {
+                board[j][i] = values[j];
+            }
+        }
     }
 
     /**
