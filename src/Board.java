@@ -1,5 +1,3 @@
-import java.util.Arrays;
-
 public class Board {
 
     private String[][] board;
@@ -17,8 +15,14 @@ public class Board {
         System.out.println(gameBoard.toString());
         gameBoard.makeMove("O", 7, 7);
         System.out.println(gameBoard.toString());
+        gameBoard.makeMove("X", 3, 6);
+        System.out.println(gameBoard.toString());
+
     }
 
+    /**
+     * Initializes the board to its default state (2 X's and 2 O's placed diagonally from each other)
+     */
     public void initialize() {
         // Use X for Black, O for Whites, . for empty space
         for(int x = 0; x < board.length; x++){
@@ -30,11 +34,17 @@ public class Board {
         board[4][4] = "O";
         board[4][3] = "X";
         board[3][4] = "X";
-
     }
 
-    // TODO: check if move at (x,y) from player is valid
+    /**
+     * Checks if a move made by a player at coordinate (x, y) is valid, and returns a boolean with the result
+     * @param player player indicator, can be either X or O
+     * @param x x-coordinate to check
+     * @param y y-coordinate to check
+     * @return true if the move is valid, false otherwise
+     */
     public boolean isValidMove(String player, int x, int y) {
+        // TODO: check if move at (x,y) from player is valid
         String opponent;
         if (player.equals("X")) opponent = "O";
         else opponent = "X";
@@ -66,16 +76,28 @@ public class Board {
         return false;
     }
 
+    /**
+     * Makes a move at a specified coordinate in the board, changing its value to a parameter
+     * @param player player indicator, can be either X or O
+     * @param x x-coordinate in the board
+     * @param y y-coordinate in the board
+     */
     public void makeMove(String player, int x, int y) {
         board[x][y] = player;
         update(player, x, y);
     }
 
-    // TODO: update the board after a move is made, so that u can turn over a bunch of disks after u made a big move
+    /**
+     * Called right after a move is made, updates the board so that values are changed and opposing disks are "captured"
+     * @param player player which just made the move, can be either X or O
+     * @param previousX x-coordinate in the board where the move was made
+     * @param previousY y-coordinate in the board where the move was made
+     */
     public void update(String player, int previousX, int previousY) {
         String opponent;
         if (player.equals("X")) opponent = "O";
         else opponent = "X";
+        // TODO: update the board after a move is made, so that u can turn over a bunch of disks after u made a big move
 
         /*
         player: X or O, depending on which player just made their move
@@ -87,65 +109,145 @@ public class Board {
         > If you run into opposite pieces and "sandwich" them in between your own pieces, turn them all to player colour
          */
 
-        int tempX = previousX;
-        int tempY = previousY;
-
-        // Check RIGHT towards our disk
         // IMPORTANT: What if we checked from the very right, then move towards our point?
-        tempX = 7; //
+        int tempX;
+        int tempY;
+
+        // >>> Check RIGHT towards our disk <<<
+        tempX = 7;
+        // Start going left
         while (tempX > previousX) { // Keep checking towards the left as long as we
             if (board[tempX][previousY].equals(".")) { // Empty space, do nothing
                 System.out.println("a");
-            }
-            if (board[tempX][previousY].equals(opponent)) { // If the disk is an enemy, stop checking cuz u can't sandwich
+            } else if (board[tempX][previousY].equals(opponent)) { // If the disk is an enemy, stop checking cuz u can't sandwich
                 break;
-            }
-            if (board[tempX][previousY].equals(player)) { // You sandwiched the opponent's disks, start flipping them
+            } else if (board[tempX][previousY].equals(player)) { // You sandwiched the opponent's disks, start flipping them
                 // TODO: start flipping stuff
             }
             tempX--;
         }
 
-        // Check UP-RIGHT towards our disk
+        // >>> Check UP-RIGHT towards our disk <<<
         tempX = previousX;
         tempY = previousY;
         do {
             tempX++;
             tempY--;
-        } while (tempX < 7 || tempY > 0);
+        } while (tempX < 7 || tempY > 0); // Set X, Y to a corner in the top-right
+        // Start going down-left
+        while (tempX > previousX || tempY < previousY) {
+            if (board[tempX][tempY].equals(".")) { // Empty space, do nothing
+                System.out.println("d");
+            } else if (board[tempX][tempY].equals(opponent)) { // Stop if you reach an enemy disk
+                break;
+            } else if (board[tempX][tempY].equals(player)) { // If a player disk is reached, flip disks in between
+                // TODO: start flipping stuff
+            }
+            tempX--;
+            tempY++;
+        }
 
-        // Check UP
+        // >>> Check UP towards our disk <<<
         tempY = 0; // Set Y to the top
+        // Start going down
+        while (tempY < previousY) {
+            if (board[previousX][tempY].equals(".")) { // Empty space, do nothing
+                System.out.println("b");
+            } else if (board[previousX][tempY].equals(opponent)) { // Stop if you reach an enemy disk
+                break;
+            } else if (board[previousX][tempY].equals(player)) {
+                // TODO: start flipping stuff
+            }
+            tempY++;
+        }
 
-        // Check UP-LEFT
+        // >>> Check UP-LEFT towards our disk
         tempX = previousX;
         tempY = previousY;
         do {
             tempX--;
             tempY--;
-        } while (tempX > 0 || tempY > 0);
+        } while (tempX > 0 || tempY > 0); // Set X, Y to a corner in the top-left
+        // Start going down-right
+        while (tempX < previousX || tempY < previousY) {
+            if (board[tempX][tempY].equals(".")) { // Empty space, do nothing
+                System.out.println("d");
+            } else if (board[tempX][tempY].equals(opponent)) { // Stop if you reach an enemy disk
+                break;
+            } else if (board[tempX][tempY].equals(player)) { // If a player disk is reached, flip disks in between
+                // TODO: start flipping stuff
+            }
+            tempX++;
+            tempY++;
+        }
 
-        // Check LEFT
+        // >>> Check LEFT
         tempX = 0; // Set X to the left
+        // Start going right
+        while (tempX > previousX) {
+            if (board[tempX][previousY].equals(".")) { // Empty space, do nothing
+                System.out.println("c");
+            } else if (board[tempX][previousY].equals(opponent)) { // Stop if you reach an enemy disk
+                break;
+            } else if (board[tempX][previousY].equals(player)) { // If a player disk is reached, flip disks in between
+                // TODO: start flipping stuff
+            }
+            tempX++;
+        }
 
-        // Check DOWN-LEFT
+        // >>> Check DOWN-LEFT
         tempX = previousX;
         tempY = previousY;
         do {
             tempX--;
             tempY++;
-        } while (tempX > 0 || tempY < 7);
-        // Check DOWN
+        } while (tempX > 0 || tempY < 7); // Set X, Y to a corner in the bottom-left
+        // Start going up-right
+        while (tempX > previousX || tempY > previousY) {
+            if (board[tempX][tempY].equals(".")) { // Empty space, do nothing
+                System.out.println("g");
+            } else if (board[tempX][tempY].equals(opponent)) { // Stop if you reach an enemy disk
+                break;
+            } else if (board[tempX][tempY].equals(player)) { // If a player disk is reached, flip disks in between
+                // TODO: start flipping stuff
+            }
+            tempX++;
+            tempY--;
+        }
+
+        // >>> Check DOWN
         tempY = 7; // Set Y to the bottom
         // Start going up
+        while (tempY > previousY) {
+            if (board[previousX][tempY].equals(".")) { // Empty space, do nothing
+                System.out.println("d");
+            } else if (board[previousX][tempY].equals(opponent)) { // Stop if you reach an enemy disk
+                break;
+            } else if (board[previousX][tempY].equals(player)) { // If a player disk is reached, flip disks in between
+                // TODO: start flipping stuff
+            }
+            tempY--;
+        }
 
-        // Check DOWN-RIGHT
+        // >>> Check DOWN-RIGHT
         tempX = previousX;
         tempY = previousY;
         do {
             tempX++;
             tempY++;
-        } while (tempX < 7 || tempY < 7);
+        } while (tempX < 7 || tempY < 7); // Set X, Y to a corner in the bottom-right
+        // Start going up-left
+        while (tempX > previousX || tempY > previousY) {
+            if (board[tempX][tempY].equals(".")) { // Empty space, do nothing
+                System.out.println("h");
+            } else if (board[tempX][tempY].equals(opponent)) { // Stop if you reach an enemy disk
+                break;
+            } else if (board[tempX][tempY].equals(player)) { // If a player disk is reached, flip disks in between
+                // TODO: start flipping stuff
+            }
+            tempX--;
+            tempY--;
+        }
 
     }
 
@@ -163,16 +265,36 @@ public class Board {
         this.board = board;
     }
 
-    // TODO
     public String toString() {
         String output = "";
-        for (int i=0; i<board.length; i++) {
-            for (int j=0; j<board[0].length; j++) {
-                //System.out.println("i: " + i + " j: " + j);
-                output += board[i][j] + " ";
+        for (int i=0; i<board.length; i++) { // Columns
+            for (int j=0; j<board[0].length; j++) { // Rows
+                output += board[j][i] + " ";
             }
             output += "\n";
         }
         return output;
+    }
+
+    /**
+     * Checks to see which player has the most disks on the board, and returns the winner of the game
+     * @return the corresponding player indicator with the most points, or Tie if both players have equal points
+     */
+    public String getWinner() {
+        int oPlayer = 0;
+        int xPlayer = 0;
+        for (int i=0; i<board.length; i++) {
+            for (int j=0; j<board[0].length; j++) {
+                if (board[j][i].equals("O")) oPlayer++;
+                if (board[j][i].equals("X")) xPlayer++;
+            }
+        }
+
+        if (oPlayer > xPlayer) {
+            return "O";
+        } else if (xPlayer > oPlayer) {
+            return "X";
+        }
+        return "Tie";
     }
 }
