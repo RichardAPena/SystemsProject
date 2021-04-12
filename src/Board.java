@@ -287,11 +287,17 @@ public class Board {
     public String[][] getBoard() {
         return board;
     }
-
+    /**
+     * Sets the value at a given x and y value
+     * @param board sets a board object
+     */
     public void setBoard(String[][] board) {
         this.board = board;
     }
 
+    /**
+     * Returns an a String version of the board
+     */
     public String toString() {
         String output = "";
         for (int i=0; i<board.length; i++) { // Columns
