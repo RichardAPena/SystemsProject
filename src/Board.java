@@ -297,21 +297,40 @@ public class Board {
         }
 
     }
-
+    /**
+     * Returns the player value at a given x and y value
+     * @param x x value on the board
+     * @param y y value on the board
+     */
     public String getValue(int x, int y) {
         return board[x][y];
     }
 
+    /**
+     * Sets the value at a given x and y value
+     * @param x x value on the board
+     * @param y y value on the board
+     * @param value which player owns that spot on the board
+     */
     public void setValue(String value, int x, int y) { board[x][y] = value; }
 
+    /**
+     * Returns a board object
+     */
     public String[][] getBoard() {
         return board;
     }
-
+    /**
+     * Sets the value at a given x and y value
+     * @param board sets a board object
+     */
     public void setBoard(String[][] board) {
         this.board = board;
     }
 
+    /**
+     * Returns an a String version of the board
+     */
     public String toString() {
         String output = "";
         for (int i=0; i<board.length; i++) { // Columns
@@ -371,4 +390,29 @@ public class Board {
         }
         return "Tie";
     }
+
+    public int getScorePlayerO() {
+        int oPlayer = 0;
+        int xPlayer = 0;
+        for (int i = 0; i < board.length; i++) {
+            for (int j = 0; j < board[0].length; j++) {
+                if (board[j][i].equals("O")) oPlayer++;
+            }
+        }
+    return oPlayer;
+    }
+
+    public int getScorePlayerX() {
+        int oPlayer = 0;
+        int xPlayer = 0;
+        for (int i = 0; i < board.length; i++) {
+            for (int j = 0; j < board[0].length; j++) {
+                if (board[j][i].equals("X")) xPlayer++;
+            }
+        }
+        return oPlayer;
+    }
+
+
+
 }
