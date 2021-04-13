@@ -2,23 +2,19 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
-import javafx.scene.Group;
-import javafx.scene.Scene;
+import javafx.scene.*;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.*;
-import javafx.scene.layout.GridPane;
+import javafx.scene.layout.*;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Background;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
@@ -47,6 +43,7 @@ public class Main extends Application {
     PrintWriter out;
     ObjectInputStream boardIn;
     String [][] currentBoard = new String[8][8];
+    Scene game;
 
     @Override
     public void start(Stage primaryStage) throws Exception{
@@ -97,7 +94,20 @@ public class Main extends Application {
                 }
             }
         });
+        playerBoard.addEventFilter(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() { // gets x and y of cell clicked
+            @Override
+            public void handle(MouseEvent e) {
 
+                for( Node node: playerBoard.getChildren()) {
+
+                    if( node instanceof Rectangle) {
+                        if( node.getBoundsInParent().contains(e.getSceneX(),  e.getSceneY())) {
+                            System.out.println("x : " + GridPane.getRowIndex(node) + " y : " + GridPane.getColumnIndex(node));
+                        }
+                    }
+                }
+            }
+        });
         btConnect.setOnAction(actionEvent -> {
             System.out.println("Connecting...");
             try {
@@ -113,9 +123,10 @@ public class Main extends Application {
                 // CURRENTLY GETS BOARD WITHOUT THREAD, JUST NEEDS TO BE IN THREAD NOW, BUT GETS BOARD FROM SERVER
                 currentBoard = (String[][]) boardIn.readObject();
                 System.out.println(Arrays.deepToString(currentBoard));
+                boardIn.close();
                 initPlayerBoard();
                 group.getChildren().add(playerBoard);
-                Scene game = new Scene(group, SCREEN_WIDTH, SCREEN_HEIGHT);
+                game = new Scene(group, SCREEN_WIDTH, SCREEN_HEIGHT);
 //                System.out.println(currentBoard);
                 primaryStage.setScene(game);
             } catch(ConnectException ce) {
@@ -144,9 +155,6 @@ public class Main extends Application {
         });
 
 
-
-
-
         EventHandler<MouseEvent> mouseMove = mouseEvent -> {
             double x = mouseEvent.getX();
             double y = mouseEvent.getY();
@@ -156,7 +164,6 @@ public class Main extends Application {
         EventHandler<MouseEvent> mouseClick = mouseEvent -> {
                 System.out.println("Clicked");
         };
-
         menu.addEventFilter(MouseEvent.MOUSE_MOVED, mouseMove);
         menu.addEventFilter(MouseEvent.MOUSE_CLICKED, mouseClick);
 
@@ -166,7 +173,6 @@ public class Main extends Application {
         primaryStage.setMinWidth(SCREEN_WIDTH);
         primaryStage.setMinHeight(SCREEN_HEIGHT);
         primaryStage.show();
-
 //        drawInitialBoardState(gc);
     }
 
@@ -196,7 +202,10 @@ public class Main extends Application {
     }
     //TODO: Get server streams running to be able to update client boards, load the server board to the client board
     public void initPlayerBoard(){ // went with GridPane, makes onMouseClick easier to update grid
-        playerBoard.setPrefSize(8,8);
+//        playerBoard.setPrefSize(8,8);
+//        playerBoard.setLayoutX(8);
+//        playerBoard.setLayoutY(8);
+
         playerBoard.setBackground(Background.EMPTY);
         for(int x = 0; x < 8; x++){
             for (int y = 0;y < 8; y++){
@@ -211,9 +220,12 @@ public class Main extends Application {
                     tile.setStroke(Color.BLACK);
                     tile.setFill(Color.GREEN);
                 }
-                playerBoard.add(new StackPane(tile),x,y);
+                GridPane.setRowIndex(tile,x);
+                GridPane.setColumnIndex(tile,y);
+                playerBoard.getChildren().add(tile);
             }
         }
+        System.out.println(playerBoard.getLayoutX());
 //        playerBoard.add(new StackPane(new Rectangle(cell_X,cell_Y,Color.WHITE)),3,3);
 //        playerBoard.add(new StackPane(new Rectangle(cell_X,cell_Y,Color.WHITE)),4,4);
 //        playerBoard.add(new StackPane(new Rectangle(cell_X,cell_Y,Color.BLACK)),3,4);
