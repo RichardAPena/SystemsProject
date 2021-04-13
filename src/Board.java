@@ -20,14 +20,15 @@ public class Board implements Serializable { // needs to be serializable to pass
 //        gameBoard.makeMove("X", 3, 6);
 //        System.out.println(gameBoard.toString());
         String stringBoard =
-                        ". . . . . . . .\n" +
-                        ". . . . . . . .\n" +
-                        ". . . . . . . .\n" +
-                        ". . . O X . . .\n" +
-                        ". . . X O . . .\n" +
-                        ". . . . . . . .\n" +
-                        ". . . . . . . .\n" +
-                        ". . . . . . . .";
+                       //0 1 2 3 4 5 6 7
+                   /*0*/". . . . . . . .\n" +
+                   /*1*/". . . . . . . .\n" +
+                   /*2*/". . . . . . . .\n" +
+                   /*3*/". . . O X . . .\n" +
+                   /*4*/". . . X O . . .\n" +
+                   /*5*/". . . . . . . .\n" +
+                   /*6*/". . . . . . . .\n" +
+                   /*7*/". . . . . . . .";
 
         System.out.println("String board: \n" + stringBoard);
         Board gameBoard = new Board();
@@ -35,7 +36,15 @@ public class Board implements Serializable { // needs to be serializable to pass
         System.out.println("To string: \n" + gameBoard.toString());
         System.out.println(gameBoard.numValidMoves("X"));
         System.out.println(gameBoard.numValidMoves("O"));
-
+        // Remember X goes first
+        gameBoard.makeMove("X", 3, 2);
+        System.out.println("To string: \n" + gameBoard.toString());
+        System.out.println(gameBoard.numValidMoves("X"));
+        System.out.println(gameBoard.numValidMoves("O"));
+        gameBoard.makeMove("O", 4, 2);
+        System.out.println("To string: \n" + gameBoard.toString());
+        System.out.println(gameBoard.numValidMoves("X"));
+        System.out.println(gameBoard.numValidMoves("O"));
     }
 
     /**
