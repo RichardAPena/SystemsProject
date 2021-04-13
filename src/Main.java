@@ -36,11 +36,14 @@ public class Main extends Application {
     final private int cell_X = 128;
     final private int cell_Y = 96;
     private GridPane playerBoard = new GridPane();
+    public String sendToServer;
 
     Socket s;
     Board board;
-    BufferedReader in;
-    PrintWriter out;
+//    BufferedReader in;
+//    PrintWriter out;
+    DataInputStream in;
+    DataOutputStream out;
     ObjectInputStream boardIn;
     String [][] currentBoard = new String[8][8];
     Scene game;
@@ -82,10 +85,10 @@ public class Main extends Application {
         Thread serverIn = new Thread(() -> {
             while (true) {
                 try {
-                    currentBoard = (String[][]) boardIn.readObject();
-                    boardIn.close();
-
-                    break;
+                    out = new DataOutputStream(s.getOutputStream());
+                    in = new DataInputStream(s.getInputStream());
+                    out.writeUTF(sendToServer);
+//                    break;
 //                    String request = "";
 //                    request = in.readLine();
 //                    System.out.println("REQUEST: " + request);
@@ -102,6 +105,7 @@ public class Main extends Application {
 
                     if( node instanceof Rectangle) {
                         if( node.getBoundsInParent().contains(e.getSceneX(),  e.getSceneY())) {
+                            sendToServer = GridPane.getRowIndex(node) + " " + GridPane.getColumnIndex(node);
                             System.out.println("x : " + GridPane.getRowIndex(node) + " y : " + GridPane.getColumnIndex(node));
                         }
                     }
@@ -114,7 +118,7 @@ public class Main extends Application {
                 s = new Socket(HOST, PORT);
 //                objOut = new ObjectOutputStream(s.getOutputStream());
                 boardIn = new ObjectInputStream(s.getInputStream());
-//                in = new BufferedReader(new InputStreamReader(s.getInputStream()));
+                out = new DataOutputStream(s.getOutputStream());
 //                out = new PrintWriter(s.getOutputStream());
 //                System.out.println(in.readLine());
 //                currentBoard = ((Board) objIn.readObject());
@@ -123,12 +127,12 @@ public class Main extends Application {
                 // CURRENTLY GETS BOARD WITHOUT THREAD, JUST NEEDS TO BE IN THREAD NOW, BUT GETS BOARD FROM SERVER
                 currentBoard = (String[][]) boardIn.readObject();
                 System.out.println(Arrays.deepToString(currentBoard));
-                boardIn.close();
                 initPlayerBoard();
                 group.getChildren().add(playerBoard);
                 game = new Scene(group, SCREEN_WIDTH, SCREEN_HEIGHT);
 //                System.out.println(currentBoard);
                 primaryStage.setScene(game);
+                serverIn.start();
             } catch(ConnectException ce) {
                 System.out.println("Could not connect to the server.");
             } catch (IOException e) {
@@ -205,7 +209,7 @@ public class Main extends Application {
 //        playerBoard.setPrefSize(8,8);
 //        playerBoard.setLayoutX(8);
 //        playerBoard.setLayoutY(8);
-
+        playerBoard.getChildren().removeAll();
         playerBoard.setBackground(Background.EMPTY);
         for(int x = 0; x < 8; x++){
             for (int y = 0;y < 8; y++){
@@ -225,7 +229,6 @@ public class Main extends Application {
                 playerBoard.getChildren().add(tile);
             }
         }
-        System.out.println(playerBoard.getLayoutX());
 //        playerBoard.add(new StackPane(new Rectangle(cell_X,cell_Y,Color.WHITE)),3,3);
 //        playerBoard.add(new StackPane(new Rectangle(cell_X,cell_Y,Color.WHITE)),4,4);
 //        playerBoard.add(new StackPane(new Rectangle(cell_X,cell_Y,Color.BLACK)),3,4);
