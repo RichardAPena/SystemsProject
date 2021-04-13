@@ -1,4 +1,6 @@
-public class Board {
+import java.io.Serializable;
+
+public class Board implements Serializable { // needs to be serializable to pass from server to client via ObjectStream
 
     private String[][] board;
 

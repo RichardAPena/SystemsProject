@@ -23,12 +23,10 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.ConnectException;
 import java.net.Socket;
+import java.util.Arrays;
 
 // Client
 
@@ -47,6 +45,8 @@ public class Main extends Application {
     Board board;
     BufferedReader in;
     PrintWriter out;
+    ObjectInputStream boardIn;
+    String [][] currentBoard = new String[8][8];
 
     @Override
     public void start(Stage primaryStage) throws Exception{
@@ -61,9 +61,7 @@ public class Main extends Application {
 //        group.getChildren().add(background);
 //        background.setStyle("-fx-background-color: green");
 
-        initPlayerBoard();
-        group.getChildren().add(playerBoard);
-        Scene game = new Scene(group, SCREEN_WIDTH, SCREEN_HEIGHT);
+
 
         // Grid Pane for Menu
         GridPane grid = new GridPane();
@@ -83,17 +81,48 @@ public class Main extends Application {
         grid.add(btExit, 0,3);
 
         Scene menu = new Scene(grid, SCREEN_WIDTH, SCREEN_HEIGHT);
+        // TODO: Should constantly read in requests from the server and handle them (like server sending a new board or telling you its your turn)
+        Thread serverIn = new Thread(() -> {
+            while (true) {
+                try {
+                    currentBoard = (String[][]) boardIn.readObject();
+                    boardIn.close();
+
+                    break;
+//                    String request = "";
+//                    request = in.readLine();
+//                    System.out.println("REQUEST: " + request);
+                } catch (Exception e) {
+                    //e.printStackTrace();
+                }
+            }
+        });
 
         btConnect.setOnAction(actionEvent -> {
             System.out.println("Connecting...");
             try {
                 s = new Socket(HOST, PORT);
-                in = new BufferedReader(new InputStreamReader(s.getInputStream()));
-                out = new PrintWriter(s.getOutputStream());
+//                objOut = new ObjectOutputStream(s.getOutputStream());
+                boardIn = new ObjectInputStream(s.getInputStream());
+//                in = new BufferedReader(new InputStreamReader(s.getInputStream()));
+//                out = new PrintWriter(s.getOutputStream());
+//                System.out.println(in.readLine());
+//                currentBoard = ((Board) objIn.readObject());
+//                serverIn.start();
+
+                // CURRENTLY GETS BOARD WITHOUT THREAD, JUST NEEDS TO BE IN THREAD NOW, BUT GETS BOARD FROM SERVER
+                currentBoard = (String[][]) boardIn.readObject();
+                System.out.println(Arrays.deepToString(currentBoard));
+                initPlayerBoard();
+                group.getChildren().add(playerBoard);
+                Scene game = new Scene(group, SCREEN_WIDTH, SCREEN_HEIGHT);
+//                System.out.println(currentBoard);
                 primaryStage.setScene(game);
             } catch(ConnectException ce) {
                 System.out.println("Could not connect to the server.");
             } catch (IOException e) {
+                e.printStackTrace();
+            }catch(Exception e){
                 e.printStackTrace();
             }
         });
@@ -116,20 +145,7 @@ public class Main extends Application {
 
 
 
-        // TODO: Should constantly read in requests from the server and handle them (like server sending a new board or telling you its your turn)
-        Thread serverIn = new Thread(() -> {
-            while (true) {
-                try {
-                    String request = "";
-                    request = in.readLine();
-                    System.out.println("REQUEST: " + request);
-                } catch (Exception e) {
-                    //e.printStackTrace();
-                }
-            }
-        });
 
-        serverIn.start();
 
         EventHandler<MouseEvent> mouseMove = mouseEvent -> {
             double x = mouseEvent.getX();
@@ -185,15 +201,23 @@ public class Main extends Application {
         for(int x = 0; x < 8; x++){
             for (int y = 0;y < 8; y++){
                 Rectangle tile = new Rectangle(cell_X,cell_Y);
-                tile.setStroke(Color.BLACK);
-                tile.setFill(Color.GREEN);
+                if (currentBoard[x][y].equals("X")){
+                    tile.setFill(Color.BLACK);
+                }
+                else if (currentBoard[x][y].equals("O")){
+                    tile.setFill(Color.WHITE);
+                }
+                else{
+                    tile.setStroke(Color.BLACK);
+                    tile.setFill(Color.GREEN);
+                }
                 playerBoard.add(new StackPane(tile),x,y);
             }
         }
-        playerBoard.add(new StackPane(new Rectangle(cell_X,cell_Y,Color.WHITE)),3,3);
-        playerBoard.add(new StackPane(new Rectangle(cell_X,cell_Y,Color.WHITE)),4,4);
-        playerBoard.add(new StackPane(new Rectangle(cell_X,cell_Y,Color.BLACK)),3,4);
-        playerBoard.add(new StackPane(new Rectangle(cell_X,cell_Y,Color.BLACK)),4,3);
+//        playerBoard.add(new StackPane(new Rectangle(cell_X,cell_Y,Color.WHITE)),3,3);
+//        playerBoard.add(new StackPane(new Rectangle(cell_X,cell_Y,Color.WHITE)),4,4);
+//        playerBoard.add(new StackPane(new Rectangle(cell_X,cell_Y,Color.BLACK)),3,4);
+//        playerBoard.add(new StackPane(new Rectangle(cell_X,cell_Y,Color.BLACK)),4,3);
 
         //I tried adding text to output the score on the screen but since the board is null I keep getting errors
          /*
