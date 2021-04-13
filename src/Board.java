@@ -33,6 +33,9 @@ public class Board implements Serializable { // needs to be serializable to pass
         Board gameBoard = new Board();
         gameBoard.fromString(stringBoard);
         System.out.println("To string: \n" + gameBoard.toString());
+        System.out.println(gameBoard.numValidMoves("X"));
+        System.out.println(gameBoard.numValidMoves("O"));
+
     }
 
     /**
@@ -59,15 +62,16 @@ public class Board implements Serializable { // needs to be serializable to pass
      * @return true if the move is valid, false otherwise
      */
     public boolean isValidMove(String player, int x, int y) {
-        // TODO: check if move at (x,y) from player is valid
 
         if (!board[x][y].equals(".")) { // If the space is NOT empty, then its not a valid move
             return false;
         }
+
         String opponent;
         if (player.equals("X")) opponent = "O";
         else opponent = "X";
 
+        /*
         int tempX = x;
         int tempY = y;
 
@@ -130,11 +134,60 @@ public class Board implements Serializable { // needs to be serializable to pass
         // Check DOWN-RIGHT
         tempX = x;
         tempY = y;
+        */
 
-        // If none of the conditions are true, return false
+        // ================================================
+
+        // Check left
+        if (checkFlip(x-1, y, -1, 0, player, opponent))
+            return true;
+
+        // Check right
+        if (checkFlip(x+1, y, 1, 0, player, opponent))
+            return true;
+
+        // Check up
+        if (checkFlip(x, y-1, 0, -1, player, opponent))
+            return true;
+
+        // Check down
+        if (checkFlip(x, y+1, 0, 1, player, opponent))
+            return true;
+
+        // Check up-left
+        if (checkFlip(x-1, y-1, -1, -1, player, opponent))
+            return true;
+
+        // Check up-right
+        if (checkFlip(x+1, y-1, 1, -1, player, opponent))
+            return true;
+
+        // Check down-left
+        if (checkFlip(x-1, y+1, -1, 1, player, opponent))
+            return true;
+
+        // Check down-right
+        if (checkFlip(x+1, y+1, 1, 1, player, opponent))
+            return true;
+
+        // If no valid flips are found, return false
         return false;
     }
 
+    private boolean checkFlip(int x, int y, int dx, int dy, String player, String opponent) {
+        if (x < 0 || x > 7 || y < 0 || y > 7) return false;
+        if (board[x][y].equals(opponent)) {
+            while (x >= 0 && x <= 7 && y >= 0 && y <= 7) {
+                x += dx;
+                y += dy;
+                if (board[x][y].equals("."))
+                    return false;
+                if (board[x][y].equals(player))
+                    return true;
+            }
+        }
+        return false;
+    }
     /**
      * Use to check how many valid moves are available to a specified player (if none, pass)
      * @param player the player to check
@@ -143,7 +196,8 @@ public class Board implements Serializable { // needs to be serializable to pass
     public int numValidMoves(String player) {
         int validMoves = 0;
         for (int i=0; i<board.length; i++) {
-            for (int j=0; j<board[0].length; i++) {
+            for (int j=0; j<board[0].length; j++) {
+                //System.out.println("i: " + i + " j: " + j);
                 if (isValidMove(player, j, i)) validMoves++;
             }
         }
@@ -158,10 +212,48 @@ public class Board implements Serializable { // needs to be serializable to pass
      */
     public void makeMove(String player, int x, int y) {
         board[x][y] = player;
-        update(player, x, y);
+
+        String opponent;
+        if (player.equals("X")) opponent = "O";
+        else opponent = "X";
+
+        // Check left
+        if (checkFlip(x-1, y, -1, 0, player, opponent))
+            flipPieces(x-1, y, -1, 0, player, opponent);
+
+        // Check right
+        if (checkFlip(x+1, y, 1, 0, player, opponent))
+            flipPieces(x+1, y, 1, 0, player, opponent);
+
+        // Check up
+        if (checkFlip(x, y-1, 0, -1, player, opponent))
+            flipPieces(x, y-1, 0, -1, player, opponent);
+
+        // Check down
+        if (checkFlip(x, y+1, 0, 1, player, opponent))
+            flipPieces(x, y+1, 0, 1, player, opponent);
+
+        // Check up-left
+        if (checkFlip(x-1, y-1, -1, -1, player, opponent))
+            flipPieces(x-1, y-1, -1, -1, player, opponent);
+
+        // Check up-right
+        if (checkFlip(x+1, y-1, 1, -1, player, opponent))
+            flipPieces(x+1, y-1, 1, -1, player, opponent);
+
+        // Check down-left
+        if (checkFlip(x-1, y+1, -1, 1, player, opponent))
+            flipPieces(x-1, y+1, -1, 1, player, opponent);
+
+        // Check down-right
+        if (checkFlip(x+1, y+1, 1, 1, player, opponent))
+            flipPieces(x+1, y+1, 1, 1, player, opponent);
+
+        //update(player, x, y);
     }
 
     /**
+     * __DEPRECATED__
      * Called right after a move is made, updates the board so that values are changed and opposing disks are "captured"
      * @param player player which just made the move, can be either X or O
      * @param previousX x-coordinate in the board where the move was made
@@ -171,7 +263,7 @@ public class Board implements Serializable { // needs to be serializable to pass
         String opponent;
         if (player.equals("X")) opponent = "O";
         else opponent = "X";
-        // TODO: update the board after a move is made, so that u can turn over a bunch of disks after u made a big move
+
 
         /*
         player: X or O, depending on which player just made their move
@@ -196,7 +288,7 @@ public class Board implements Serializable { // needs to be serializable to pass
             } else if (board[tempX][previousY].equals(opponent)) { // If the disk is an enemy, stop checking cuz u can't sandwich
                 break;
             } else if (board[tempX][previousY].equals(player)) { // If a player disk is reached, flip disks in between
-                // TODO: start flipping stuff
+                //  start flipping stuff
             }
             tempX--;
         }
@@ -215,7 +307,7 @@ public class Board implements Serializable { // needs to be serializable to pass
             } else if (board[tempX][tempY].equals(opponent)) { // Stop if you reach an enemy disk
                 break;
             } else if (board[tempX][tempY].equals(player)) { // If a player disk is reached, flip disks in between
-                // TODO: start flipping stuff
+                //  start flipping stuff
             }
             tempX--;
             tempY++;
@@ -230,7 +322,7 @@ public class Board implements Serializable { // needs to be serializable to pass
             } else if (board[previousX][tempY].equals(opponent)) { // Stop if you reach an enemy disk
                 break;
             } else if (board[previousX][tempY].equals(player)) { // If a player disk is reached, flip disks in between
-                // TODO: start flipping stuff
+                // start flipping stuff
             }
             tempY++;
         }
@@ -249,7 +341,7 @@ public class Board implements Serializable { // needs to be serializable to pass
             } else if (board[tempX][tempY].equals(opponent)) { // Stop if you reach an enemy disk
                 break;
             } else if (board[tempX][tempY].equals(player)) { // If a player disk is reached, flip disks in between
-                // TODO: start flipping stuff
+                // start flipping stuff
             }
             tempX++;
             tempY++;
@@ -264,7 +356,7 @@ public class Board implements Serializable { // needs to be serializable to pass
             } else if (board[tempX][previousY].equals(opponent)) { // Stop if you reach an enemy disk
                 break;
             } else if (board[tempX][previousY].equals(player)) { // If a player disk is reached, flip disks in between
-                // TODO: start flipping stuff
+                // start flipping stuff
             }
             tempX++;
         }
@@ -283,7 +375,7 @@ public class Board implements Serializable { // needs to be serializable to pass
             } else if (board[tempX][tempY].equals(opponent)) { // Stop if you reach an enemy disk
                 break;
             } else if (board[tempX][tempY].equals(player)) { // If a player disk is reached, flip disks in between
-                // TODO: start flipping stuff
+                // start flipping stuff
             }
             tempX++;
             tempY--;
@@ -298,7 +390,7 @@ public class Board implements Serializable { // needs to be serializable to pass
             } else if (board[previousX][tempY].equals(opponent)) { // Stop if you reach an enemy disk
                 break;
             } else if (board[previousX][tempY].equals(player)) { // If a player disk is reached, flip disks in between
-                // TODO: start flipping stuff
+                // start flipping stuff
             }
             tempY--;
         }
@@ -317,13 +409,25 @@ public class Board implements Serializable { // needs to be serializable to pass
             } else if (board[tempX][tempY].equals(opponent)) { // Stop if you reach an enemy disk
                 break;
             } else if (board[tempX][tempY].equals(player)) { // If a player disk is reached, flip disks in between
-                // TODO: start flipping stuff
+                // start flipping stuff
             }
             tempX--;
             tempY--;
         }
+        // =========================================
+
+        //if (checkFlip())
 
     }
+
+    private void flipPieces(int x, int y, int dx, int dy, String player, String opponent) {
+        while (board[x][y].equals(opponent)) {
+            board[x][y] = player;
+            x += dx;
+            y += dy;
+        }
+    }
+
     /**
      * Returns the player value at a given x and y value
      * @param x x value on the board
