@@ -58,10 +58,7 @@ public class Board {
      */
     public boolean isValidMove(String player, int x, int y) {
         // TODO: check if move at (x,y) from player is valid
-        /*
-        Go to a corner
-        once u get there
-         */
+
         if (!board[x][y].equals(".")) { // If the space is NOT empty, then its not a valid move
             return false;
         }
@@ -72,7 +69,7 @@ public class Board {
         int tempX = x;
         int tempY = y;
 
-        // Check RIGHT
+        // >>> Check RIGHT
         tempX = 7;
         while (tempX > x) {
             if (board[tempX][y].equals(player)) {
@@ -82,29 +79,57 @@ public class Board {
             }
             tempX--;
         }
-        // Check UP-RIGHT
+        // >>> Check UP-RIGHT
+        tempX = x;
+        tempY = y;
 
 
-        // Check UP
+        // >>> Check UP
         tempY = 0;
         while (tempY < y) {
+            if (board[x][tempY].equals(player)) {
+                return true;
+            } else if (board[x][tempY].equals(opponent)) {
+                break;
+            }
             tempY++;
         }
 
-        // Check UP-LEFT
+        // >>> Check UP-LEFT
+        tempX = x;
+        tempY = y;
 
-        // Check LEFT
+        // >>> Check LEFT
         tempX = 0;
+        while (tempX < x) {
+            if (board[tempX][y].equals(player)) {
+                return true;
+            } else if (board[tempX][y].equals(opponent)) {
+                break;
+            }
+            tempX++;
+        }
 
-        // Check DOWN-LEFT
+        // >>> Check DOWN-LEFT
+        tempX = x;
+        tempY = y;
 
-        // Check DOWN
+        // >>> Check DOWN
         tempY = 7;
+        while (tempY > y) {
+            if (board[x][tempY].equals(player)) {
+                return true;
+            } else if (board[x][tempY].equals(opponent)) {
+                break;
+            }
+            tempY--;
+        }
 
         // Check DOWN-RIGHT
+        tempX = x;
+        tempY = y;
 
-
-        // Else return false
+        // If none of the conditions are true, return false
         return false;
     }
 
