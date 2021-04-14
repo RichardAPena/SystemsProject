@@ -35,34 +35,26 @@ public class Main extends Application {
     final private String HOST = "localhost";
     final private int SCREEN_WIDTH = 1024;
     final private int SCREEN_HEIGHT = 768;
-    final private int cell_X = 128;
-    final private int cell_Y = 96;
-    private GridPane playerBoard = new GridPane();
-    public String sendToServer;
+    //final private int cell_X = 128;
+    //final private int cell_Y = 96;
+    //private GridPane playerBoard = new GridPane();
+    //public String sendToServer;
 
     Socket s;
-    Board board = new Board();
-//    BufferedReader in;
-//    PrintWriter out;
-    DataInputStream in;
-    DataOutputStream out;
-    ObjectInputStream boardIn;
-    String [][] currentBoard = new String[8][8];
+    Board board;
+    BufferedReader in;
+    PrintWriter out;
+    //DataInputStream in;
+    //DataOutputStream out;
+    //ObjectInputStream boardIn;
+    //String [][] currentBoard = new String[8][8];
+    boolean yourTurn;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+        board = new Board();
         board.initialize();
-        currentBoard = board.getBoard();
-        //Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
-        //StackPane background = new StackPane();
-        //Canvas canvas = new Canvas(SCREEN_WIDTH, SCREEN_HEIGHT);
-        //GraphicsContext gc = canvas.getGraphicsContext2D();
-
-        //keeping it here, if you prefer handling graphics just revert it
-//        background.getChildren().add(canvas);
-//        group.getChildren().add(background);
-//        background.setStyle("-fx-background-color: green");
-
+        //currentBoard = board.getBoard();
 
         // Grid Pane for Menu
         GridPane grid = new GridPane();
@@ -71,7 +63,7 @@ public class Main extends Application {
         grid.setHgap(10);
         grid.setVgap(5);
 
-        //Aesthetics
+        // Aesthetics
         Text emptySpace = new Text("");
         Rectangle rectangle = new Rectangle(0,0,5000,5000);
         rectangle.setManaged(false);
@@ -82,7 +74,6 @@ public class Main extends Application {
         Circle circle2 = new Circle(567, 230, 50);
         circle2.setManaged(false);
         circle2.setFill(Color.BLACK);
-
         Circle circle3 = new Circle(437, 110, 50);
         circle3.setManaged(false);
         Circle circle4 = new Circle(567, 110, 50);
@@ -101,7 +92,6 @@ public class Main extends Application {
         creditsl2.setLineSpacing(2.0);
         connection.setLineSpacing(20.0);
         connection.setTextAlignment(TextAlignment.CENTER);
-
         connection.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 20));
         creditsl1.setTextAlignment(TextAlignment.CENTER);
         creditsl2.setTextAlignment(TextAlignment.CENTER);
@@ -130,6 +120,7 @@ public class Main extends Application {
 
         Scene menu = new Scene(grid, SCREEN_WIDTH, SCREEN_HEIGHT);
 
+        // Initialize Canvas for game UI
         Group group = new Group();
         Canvas canvas = new Canvas(SCREEN_WIDTH, SCREEN_HEIGHT);
         GraphicsContext gc = canvas.getGraphicsContext2D();
@@ -138,8 +129,16 @@ public class Main extends Application {
 
         // TODO: Should constantly read in requests from the server and handle them (like server sending a new board or telling you its your turn)
         Thread serverIn = new Thread(() -> {
+            String request = "";
             while (true) {
                 try {
+                    request = in.readLine();
+                    if (request.equals("GAMEOVER")) {
+                            break;
+                    } else if (request.equals("YOURTURN")) {
+                        yourTurn = true;
+                    }
+                    /*
                     boardIn = new ObjectInputStream(s.getInputStream());
 
                     currentBoard = (String[][]) boardIn.readObject();
@@ -159,8 +158,9 @@ public class Main extends Application {
 //                    String request = "";
 //                    request = in.readLine();
 //                    System.out.println("REQUEST: " + request);
+                     */
                 } catch (Exception e) {
-                    //e.printStackTrace();
+                    e.printStackTrace();
                 }
             }
         });
@@ -194,6 +194,8 @@ public class Main extends Application {
             System.out.println("Connecting...");
             try {
                 s = new Socket(HOST, PORT);
+                in = new BufferedReader(new InputStreamReader(s.getInputStream()));
+                out = new PrintWriter(s.getOutputStream());
 //                objOut = new ObjectOutputStream(s.getOutputStream());
 //                boardIn = new ObjectInputStream(s.getInputStream());
 //                out = new DataOutputStream(s.getOutputStream());
@@ -225,14 +227,12 @@ public class Main extends Application {
             Platform.exit();
         });
 
-        // TODO: thread for draw
-        // TODO: socket stuff
+        // Draws board 60 times per second
         Thread drawBoard = new Thread(() -> {
             try {
                 while (true) {
-                    Thread.sleep(1000/60); // updates board 60 frames per second, prob only need to update when it changes
+                    Thread.sleep(1000/60);
                     draw(gc);
-                    //System.out.println("test");
                 }
             } catch (Exception e) { e.printStackTrace(); }
         });
@@ -263,6 +263,7 @@ public class Main extends Application {
         primaryStage.setScene(menu);
         primaryStage.setMinWidth(SCREEN_WIDTH);
         primaryStage.setMinHeight(SCREEN_HEIGHT);
+        primaryStage.setResizable(false);
         primaryStage.show();
     }
 
@@ -314,6 +315,7 @@ public class Main extends Application {
         }
     }
 
+    /*
     public void drawInitialBoardState(GraphicsContext gc) {
         // Board drawn to initial state
         // Dimensions for 8x8 in our window is rect of length = 128 width = 96
@@ -333,8 +335,9 @@ public class Main extends Application {
 
             }
         }
-    }
+    }*/
     //TODO: Get server streams running to be able to update client boards, load the server board to the client board
+    /*
     public void initPlayerBoard(){ // went with GridPane, makes onMouseClick easier to update grid
 //        playerBoard.setPrefSize(8,8);
 //        playerBoard.setLayoutX(8);
@@ -372,8 +375,8 @@ public class Main extends Application {
         playerBoard.add(scoreX, 0,0);
         playerBoard.add(scoreO, 0,0);
 
-         */
-    }
+
+    }*/
 
     public void stop() {
         System.exit(0);
