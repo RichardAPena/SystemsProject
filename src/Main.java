@@ -10,7 +10,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
-import javafx.scene.text.Text;
+import javafx.scene.shape.Circle;
+import javafx.scene.text.*;
 import javafx.stage.Stage;
 
 import javafx.scene.input.MouseEvent;
@@ -64,23 +65,69 @@ public class Main extends Application {
 //        background.setStyle("-fx-background-color: green");
 
 
-
         // Grid Pane for Menu
         GridPane grid = new GridPane();
+        grid.setManaged(false);
         grid.setAlignment(Pos.CENTER);
         grid.setHgap(10);
-        grid.setVgap(10);
+        grid.setVgap(5);
+        //Aesthetics
+        Text emptySpace = new Text("");
+        Rectangle rectangle = new Rectangle(0,0,5000,5000);
+        rectangle.setManaged(false);
+        rectangle.setFill(Color.FORESTGREEN);
+        Circle circle1 = new Circle(437, 230, 50);
+        circle1.setManaged(false);
+        circle1.setFill(Color.WHITE);
+        Circle circle2 = new Circle(567, 230, 50);
+        circle2.setManaged(false);
+        circle2.setFill(Color.BLACK);
 
+        Circle circle3 = new Circle(437, 110, 50);
+        circle3.setManaged(false);
+        Circle circle4 = new Circle(567, 110, 50);
+        circle4.setManaged(false);
+        circle4.setFill(Color.WHITE);
         // UI Elements for Menu
-        Label label = new Label("Othello"); // TODO
+        Text text = new Text("Othello"); // TODO
+        text.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 50));
+        Text creditsl1 = new Text("Created by : Richard Pena, David Watt,"); // TODO
+        Text creditsl2 = new Text ("Saffana Ahammed and Nick Gaudet");
+        Text connection = new Text ("Waiting for input....");
+        connection.setWrappingWidth(225);
+        text.setLineSpacing(5.0);
+        creditsl1.setLineSpacing(2.0);
+        creditsl2.setLineSpacing(2.0);
+        connection.setLineSpacing(20.0);
+        connection.setTextAlignment(TextAlignment.CENTER);
+
+        connection.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 20));
+        creditsl1.setTextAlignment(TextAlignment.CENTER);
+        creditsl2.setTextAlignment(TextAlignment.CENTER);
+        creditsl1.setWrappingWidth(225);
+        creditsl2.setWrappingWidth(225);
+        creditsl1.setFont(Font.font("verdana", FontWeight.NORMAL, FontPosture.REGULAR, 20));
+        creditsl2.setFont(Font.font("verdana", FontWeight.NORMAL, FontPosture.REGULAR, 20));
         Button btConnect = new Button("Connect");
         btConnect.setPrefWidth(200);
+        btConnect.setStyle("-fx-background-color: #ebe834;");
         Button btExit = new Button("Exit");
+        btExit.setStyle("-fx-background-color: #00ffff;");
         btExit.setPrefWidth(200);
+        grid.getChildren().add(0,rectangle);
+        grid.add (emptySpace,0,11);
+        grid.add(text, 0, 12);
+        grid.add(btConnect, 0, 13);
+        grid.add(btExit, 0,14);
+        grid.add(creditsl1,0,15);
+        grid.add(creditsl2,0,16);
+        grid.getChildren().add(1,circle1);
+        grid.getChildren().add(2,circle2);
+        grid.getChildren().add(1,circle3);
+        grid.getChildren().add(2,circle4);
+        grid.add(connection,0,17);
 
-        grid.add(label, 0, 1);
-        grid.add(btConnect, 0, 2);
-        grid.add(btExit, 0,3);
+
 
         Scene menu = new Scene(grid, SCREEN_WIDTH, SCREEN_HEIGHT);
         // TODO: Should constantly read in requests from the server and handle them (like server sending a new board or telling you its your turn)
@@ -139,8 +186,10 @@ public class Main extends Application {
             }
         });
         btConnect.setOnAction(actionEvent -> {
+
             System.out.println("Connecting...");
             try {
+
                 s = new Socket(HOST, PORT);
 //                objOut = new ObjectOutputStream(s.getOutputStream());
 //                boardIn = new ObjectInputStream(s.getInputStream());
@@ -158,6 +207,7 @@ public class Main extends Application {
                 primaryStage.setScene(game);
                 serverIn.start();
             } catch(ConnectException ce) {
+                connection.setText("Could not connect to the server");
                 System.out.println("Could not connect to the server.");
             } catch (IOException e) {
                 e.printStackTrace();
@@ -167,6 +217,7 @@ public class Main extends Application {
         });
 
         btExit.setOnAction(actionEvent -> {
+            connection.setText("Exiting");
             System.out.println("Exiting...");
             Platform.exit();
         });

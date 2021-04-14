@@ -87,5 +87,6 @@
     <orderEntry type="library" name="javafx.swing" level="project" />
     <orderEntry type="library" name="javafx.web" level="project" />
     <orderEntry type="library" name="javafx.controls" level="project" />
+    <orderEntry type="library" name="javafx-swt1" level="application" />
   </component>
 </module>
