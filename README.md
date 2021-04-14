@@ -9,14 +9,14 @@ Group Members:
 # Othello
 <img src=".\othello.gif">
 <p>Description:</p> 
-<p>Othello (A slight variant of Reversi), is a strategical board game played by two players on an 8x8 uncheckered board. The main objective is for a player to have a majority of their pieces occupying the board. A player is able to take control over the other player's area of the board if their are able to enclose the other player's pieces within a line, example being "XOOOO" placing an X in the last spot -> "XOOOX -> "XXXXX".The game ends when neither player is able to make any more moves, and a winner is decided based on which player controls the most area.</p>
+<p>Othello (A slight variant of Reversi), is a strategical board game played by two players on an 8x8 uncheckered board. The main objective is for a player to have a majority of their pieces occupying the board. A player is able to take control over the other player's area of the board if they are able to enclose the other player's pieces within a line, example being "XOOOO" placing an X in the last spot -> "XOOOX -> "XXXXX".The game ends when neither player is able to make any more moves, and a winner is decided based on which player controls the most area.</p>
 
 How to run:
 1. Open up a terminal of your choice such as command prompt.
-2. Navigate to a folder you wish to clone our project using the terminal.
-3. Type git clone and then the link to our github page. The repository wil now be on your computer.
-4. Open up our repository in an IDE of your choice, this tutorial will use Intellij
+2. Navigate to a folder you wish to clone our project to using the terminal.
+3. Type git clone and then the link to our github page. The copy of our repository wil now be on your computer.
+4. Open up our repository in an IDE of your choice, this tutorial will use Intellij.
 5. Click File and edit project structure, make the language Java 11 and make sure you have the required packages to run the application.
 6. Go to run and edit configurations, create 2 running applications, one for the Main Class and one for the Server Class, make sure you use VM options and include the packages.
 7. Run the Server class first, followed by the Main class.
-8. Click connect to connect to the server and start playing the game.
+8. Click the 'connect' button in order to connect to the server and start playing the game.

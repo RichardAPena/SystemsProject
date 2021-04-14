@@ -75,7 +75,7 @@ public class Main extends Application {
         Text emptySpace = new Text("");
         Rectangle rectangle = new Rectangle(0,0,5000,5000);
         rectangle.setManaged(false);
-        rectangle.setFill(Color.GREEN);
+        rectangle.setFill(Color.FORESTGREEN);
         Circle circle1 = new Circle(437, 230, 50);
         circle1.setManaged(false);
         circle1.setFill(Color.WHITE);
@@ -95,6 +95,10 @@ public class Main extends Application {
         Text creditsl2 = new Text ("Saffana Ahammed and Nick Gaudet");
         Text connection = new Text ("Waiting for input....");
         connection.setWrappingWidth(225);
+        text.setLineSpacing(5.0);
+        creditsl1.setLineSpacing(2.0);
+        creditsl2.setLineSpacing(2.0);
+        connection.setLineSpacing(20.0);
         connection.setTextAlignment(TextAlignment.CENTER);
 
         connection.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 20));
@@ -102,13 +106,13 @@ public class Main extends Application {
         creditsl2.setTextAlignment(TextAlignment.CENTER);
         creditsl1.setWrappingWidth(225);
         creditsl2.setWrappingWidth(225);
-        creditsl1.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 20));
-        creditsl2.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 20));
+        creditsl1.setFont(Font.font("verdana", FontWeight.NORMAL, FontPosture.REGULAR, 20));
+        creditsl2.setFont(Font.font("verdana", FontWeight.NORMAL, FontPosture.REGULAR, 20));
         Button btConnect = new Button("Connect");
         btConnect.setPrefWidth(200);
         btConnect.setStyle("-fx-background-color: #ebe834;");
         Button btExit = new Button("Exit");
-        btExit.setStyle("-fx-background-color: #f50529;");
+        btExit.setStyle("-fx-background-color: #00ffff;");
         btExit.setPrefWidth(200);
         grid.getChildren().add(0,rectangle);
         grid.add (emptySpace,0,11);
