@@ -8,13 +8,13 @@ public class Server {
 
     private static final int PORT = 1234;
     private static final String hostName = "localhost";
+    static volatile Board board = new Board();
 
     public static void main(String[] args) throws IOException {
 
         ServerSocket ss = new ServerSocket();
         SocketAddress add = new InetSocketAddress(hostName, PORT);
         ss.bind(add);
-        Board board = new Board();
         board.initialize();
         System.out.println("Waiting for players");
         Socket s1 = ss.accept();

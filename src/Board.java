@@ -243,7 +243,7 @@ public class Board implements Serializable { // needs to be serializable to pass
     /**
      * Returns a board object
      */
-    public String[][] getBoard() {
+    public synchronized String[][] getBoard() {
         return board;
     }
     /**
