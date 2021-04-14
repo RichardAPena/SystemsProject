@@ -3,6 +3,7 @@ import javafx.application.Platform;
 import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.*;
+import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
@@ -38,7 +39,6 @@ public class Main extends Application {
     final private int cell_Y = 96;
     private GridPane playerBoard = new GridPane();
     public String sendToServer;
-    Group group = new Group();
 
     Socket s;
     Board board = new Board();
@@ -48,10 +48,9 @@ public class Main extends Application {
     DataOutputStream out;
     ObjectInputStream boardIn;
     String [][] currentBoard = new String[8][8];
-    Scene game = new Scene(group, SCREEN_WIDTH, SCREEN_HEIGHT);
 
     @Override
-    public void start(Stage primaryStage) throws Exception{
+    public void start(Stage primaryStage) throws Exception {
         board.initialize();
         currentBoard = board.getBoard();
         //Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
@@ -71,6 +70,7 @@ public class Main extends Application {
         grid.setAlignment(Pos.CENTER);
         grid.setHgap(10);
         grid.setVgap(5);
+
         //Aesthetics
         Text emptySpace = new Text("");
         Rectangle rectangle = new Rectangle(0,0,5000,5000);
@@ -88,6 +88,7 @@ public class Main extends Application {
         Circle circle4 = new Circle(567, 110, 50);
         circle4.setManaged(false);
         circle4.setFill(Color.WHITE);
+
         // UI Elements for Menu
         Text text = new Text("Othello"); // TODO
         text.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 50));
@@ -127,15 +128,18 @@ public class Main extends Application {
         grid.getChildren().add(2,circle4);
         grid.add(connection,0,17);
 
-
-
         Scene menu = new Scene(grid, SCREEN_WIDTH, SCREEN_HEIGHT);
+
+        Group group = new Group();
+        Canvas canvas = new Canvas(SCREEN_WIDTH, SCREEN_HEIGHT);
+        GraphicsContext gc = canvas.getGraphicsContext2D();
+        group.getChildren().add(canvas);
+        Scene game = new Scene(group, SCREEN_WIDTH, SCREEN_HEIGHT);
+
         // TODO: Should constantly read in requests from the server and handle them (like server sending a new board or telling you its your turn)
         Thread serverIn = new Thread(() -> {
             while (true) {
                 try {
-
-
                     boardIn = new ObjectInputStream(s.getInputStream());
 
                     currentBoard = (String[][]) boardIn.readObject();
@@ -151,7 +155,6 @@ public class Main extends Application {
                         }
                     });
 
-
 //                    break;
 //                    String request = "";
 //                    request = in.readLine();
@@ -161,7 +164,8 @@ public class Main extends Application {
                 }
             }
         });
-        playerBoard.addEventFilter(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() { // gets x and y of cell clicked
+
+        /*playerBoard.addEventFilter(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() { // gets x and y of cell clicked
             @Override
             public void handle(MouseEvent e) {
 
@@ -184,12 +188,11 @@ public class Main extends Application {
                     }
                 }
             }
-        });
-        btConnect.setOnAction(actionEvent -> {
+        });*/
 
+        btConnect.setOnAction(actionEvent -> {
             System.out.println("Connecting...");
             try {
-
                 s = new Socket(HOST, PORT);
 //                objOut = new ObjectOutputStream(s.getOutputStream());
 //                boardIn = new ObjectInputStream(s.getInputStream());
@@ -200,8 +203,8 @@ public class Main extends Application {
 //                serverIn.start();
 
                 // CURRENTLY GETS BOARD WITHOUT THREAD, JUST NEEDS TO BE IN THREAD NOW, BUT GETS BOARD FROM SERVER
-                initPlayerBoard();
-                group.getChildren().add(playerBoard);
+                //initPlayerBoard();
+                //group.getChildren().add(playerBoard);
 
 //                game = new Scene(group, SCREEN_WIDTH, SCREEN_HEIGHT);
                 primaryStage.setScene(game);
@@ -211,7 +214,7 @@ public class Main extends Application {
                 System.out.println("Could not connect to the server.");
             } catch (IOException e) {
                 e.printStackTrace();
-            }catch(Exception e){
+            }catch (Exception e) {
                 e.printStackTrace();
             }
         });
@@ -228,23 +231,32 @@ public class Main extends Application {
             try {
                 while (true) {
                     Thread.sleep(1000/60); // updates board 60 frames per second, prob only need to update when it changes
+                    draw(gc);
                     //System.out.println("test");
                 }
             } catch (Exception e) { e.printStackTrace(); }
         });
 
-
         EventHandler<MouseEvent> mouseMove = mouseEvent -> {
             double x = mouseEvent.getX();
             double y = mouseEvent.getY();
-            System.out.println(x + " " + y);
+            //System.out.println(x + " " + y);
         };
 
         EventHandler<MouseEvent> mouseClick = mouseEvent -> {
-                System.out.println("Clicked");
+            double mouseX = mouseEvent.getX();
+            double mouseY = mouseEvent.getY();
+            System.out.println("Clicked: " + mouseX + " " + mouseY);
+            System.out.println();
+                if (mouseX >= 100 && mouseX <= gc.getCanvas().getWidth()-100 && mouseY >= 100 && mouseY <= 700) {
+                    double boardX = (mouseX - 100) / (gc.getCanvas().getWidth()-200) * 8;
+                    double boardY = (mouseY - 100) / 600 * 8;
+                    System.out.println((int) boardX + " " + (int) boardY);
+                }
         };
-        menu.addEventFilter(MouseEvent.MOUSE_MOVED, mouseMove);
-        menu.addEventFilter(MouseEvent.MOUSE_CLICKED, mouseClick);
+
+        game.addEventFilter(MouseEvent.MOUSE_MOVED, mouseMove);
+        game.addEventFilter(MouseEvent.MOUSE_CLICKED, mouseClick);
 
         drawBoard.start();
         primaryStage.setTitle("Othello");
@@ -252,11 +264,54 @@ public class Main extends Application {
         primaryStage.setMinWidth(SCREEN_WIDTH);
         primaryStage.setMinHeight(SCREEN_HEIGHT);
         primaryStage.show();
-//        drawInitialBoardState(gc);
     }
 
     public static void main(String[] args) {
         launch(args);
+    }
+
+    public void draw(GraphicsContext gc) {
+
+        double gridX = 100;
+        double gridY = 100;
+        double gridWidth = gc.getCanvas().getWidth()-200;
+        double gridHeight = 600;
+
+        // Draw background
+        gc.setFill(Color.WHITE);
+        gc.fillRect(0, 0, gc.getCanvas().getWidth(), gc.getCanvas().getHeight());
+
+        gc.setFill(Color.BLACK);
+        gc.setLineWidth(10);
+        gc.fillText("X turn", 100, 50);
+        gc.fillText("X score: " + board.getScore("X"), 200, 25);
+        gc.fillText("O score: " + board.getScore("O"), 200, 50);
+
+        // Draw board background
+        gc.setFill(Color.DARKGREEN);
+        gc.fillRect(gridX, gridY, gridWidth, gridHeight);
+
+        //gc.setFill(Color.BLACK);
+        //gc.strokeRect(100, 100, gridWidth, gridHeight);
+
+        // Draw grid lines
+        for (int i=0; i<=board.getBoard().length; i++) {
+            gc.strokeLine(gridX+gridWidth/8*i, gridY, gridX+gridWidth/8*i, gridY+gridHeight); // Vertical
+            gc.strokeLine(gridX, gridY+gridHeight/8*i, gridX+gridWidth, gridY+gridHeight/8*i); // Horizontal
+        }
+
+        // Draw pieces
+        for (int i=0; i<board.getBoard().length; i++) {
+            for (int j=0; j<board.getBoard()[0].length; j++) {
+                if (board.getValue(j, i).equals("X")) {
+                    gc.setFill(Color.BLACK);
+                    gc.fillOval(120+j*gridWidth/8, 110+i*gridHeight/8, 50, 50);
+                } else if (board.getValue(j, i).equals("O")) {
+                    gc.setFill(Color.WHITE);
+                    gc.fillOval(120+j*gridWidth/8, 110+i*gridHeight/8, 50, 50);
+                }
+            }
+        }
     }
 
     public void drawInitialBoardState(GraphicsContext gc) {
@@ -320,8 +375,7 @@ public class Main extends Application {
          */
     }
 
-
     public void stop() {
-        Platform.exit();
+        System.exit(0);
     }
 }

@@ -33,6 +33,7 @@ public class Player extends Thread {
                     goNext = false;
                 }
                 request = in.readLine();
+                System.out.println(piece + ": " + request);
                 if (request.startsWith("MAKEMOVE")) {
 
                 } else if (request.startsWith("PASS")) {
