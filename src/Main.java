@@ -238,13 +238,15 @@ public class Main extends Application {
             for (int y = 0;y < 8; y++){
                 Rectangle tile = new Rectangle(cell_X,cell_Y);
                 if (currentBoard[x][y].equals("X")){
+                    tile.setStroke(Color.LIGHTGREY);
                     tile.setFill(Color.BLACK);
                 }
                 else if (currentBoard[x][y].equals("O")){
+                    tile.setStroke(Color.LIGHTGREY);
                     tile.setFill(Color.WHITE);
                 }
                 else{
-                    tile.setStroke(Color.BLACK);
+                    tile.setStroke(Color.LIGHTGREY);
                     tile.setFill(Color.GREEN);
                 }
                 GridPane.setRowIndex(tile,x);
