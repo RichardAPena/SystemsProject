@@ -76,16 +76,16 @@ public class Main extends Application {
         Rectangle rectangle = new Rectangle(0,0,5000,5000);
         rectangle.setManaged(false);
         rectangle.setFill(Color.GREEN);
-        Circle circle1 = new Circle(450, 240, 50);
+        Circle circle1 = new Circle(437, 230, 50);
         circle1.setManaged(false);
         circle1.setFill(Color.WHITE);
-        Circle circle2 = new Circle(570, 240, 50);
+        Circle circle2 = new Circle(567, 230, 50);
         circle2.setManaged(false);
         circle2.setFill(Color.BLACK);
 
-        Circle circle3 = new Circle(450, 120, 50);
+        Circle circle3 = new Circle(437, 110, 50);
         circle3.setManaged(false);
-        Circle circle4 = new Circle(570, 120, 50);
+        Circle circle4 = new Circle(567, 110, 50);
         circle4.setManaged(false);
         circle4.setFill(Color.WHITE);
         // UI Elements for Menu
@@ -93,12 +93,15 @@ public class Main extends Application {
         text.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 50));
         Text creditsl1 = new Text("Created by : Richard Pena, David Watt,"); // TODO
         Text creditsl2 = new Text ("Saffana Ahammed and Nick Gaudet");
+        Text connection = new Text ("Waiting for input....");
+        connection.setWrappingWidth(225);
+        connection.setTextAlignment(TextAlignment.CENTER);
+
+        connection.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 20));
         creditsl1.setTextAlignment(TextAlignment.CENTER);
         creditsl2.setTextAlignment(TextAlignment.CENTER);
         creditsl1.setWrappingWidth(225);
         creditsl2.setWrappingWidth(225);
-
-
         creditsl1.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 20));
         creditsl2.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 20));
         Button btConnect = new Button("Connect");
@@ -108,16 +111,17 @@ public class Main extends Application {
         btExit.setStyle("-fx-background-color: #f50529;");
         btExit.setPrefWidth(200);
         grid.getChildren().add(0,rectangle);
-        grid.add (emptySpace,0,6);
-        grid.add(text, 0, 7);
-        grid.add(btConnect, 0, 8);
-        grid.add(btExit, 0,9);
-        grid.add(creditsl1,0,10);
-        grid.add(creditsl2,0,11);
+        grid.add (emptySpace,0,11);
+        grid.add(text, 0, 12);
+        grid.add(btConnect, 0, 13);
+        grid.add(btExit, 0,14);
+        grid.add(creditsl1,0,15);
+        grid.add(creditsl2,0,16);
         grid.getChildren().add(1,circle1);
         grid.getChildren().add(2,circle2);
         grid.getChildren().add(1,circle3);
         grid.getChildren().add(2,circle4);
+        grid.add(connection,0,17);
 
 
 
@@ -178,8 +182,10 @@ public class Main extends Application {
             }
         });
         btConnect.setOnAction(actionEvent -> {
+
             System.out.println("Connecting...");
             try {
+
                 s = new Socket(HOST, PORT);
 //                objOut = new ObjectOutputStream(s.getOutputStream());
 //                boardIn = new ObjectInputStream(s.getInputStream());
@@ -197,6 +203,7 @@ public class Main extends Application {
                 primaryStage.setScene(game);
                 serverIn.start();
             } catch(ConnectException ce) {
+                connection.setText("Could not connect to the server");
                 System.out.println("Could not connect to the server.");
             } catch (IOException e) {
                 e.printStackTrace();
@@ -206,6 +213,7 @@ public class Main extends Application {
         });
 
         btExit.setOnAction(actionEvent -> {
+            connection.setText("Exiting");
             System.out.println("Exiting...");
             Platform.exit();
         });
