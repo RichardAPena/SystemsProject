@@ -10,6 +10,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
+import javafx.scene.shape.Circle;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
@@ -64,23 +65,45 @@ public class Main extends Application {
 //        background.setStyle("-fx-background-color: green");
 
 
-
         // Grid Pane for Menu
         GridPane grid = new GridPane();
+        grid.setManaged(false);
         grid.setAlignment(Pos.CENTER);
         grid.setHgap(10);
         grid.setVgap(10);
+        //Aesthetics
+        Rectangle rectangle = new Rectangle(0,0,5000,5000);
+        rectangle.setManaged(false);
+        rectangle.setFill(Color.GREEN);
+        Circle circle1 = new Circle(450, 290, 50);
+        circle1.setManaged(false);
+        Circle circle2 = new Circle(570, 290, 50);
+        circle2.setManaged(false);
+        circle2.setFill(Color.WHITE);
 
+        Circle circle3 = new Circle(450, 170, 50);
+        circle3.setManaged(false);
+        Circle circle4 = new Circle(570, 170, 50);
+        circle4.setManaged(false);
+        circle4.setFill(Color.WHITE);
         // UI Elements for Menu
         Label label = new Label("Othello"); // TODO
         Button btConnect = new Button("Connect");
         btConnect.setPrefWidth(200);
+        btConnect.setStyle("-fx-background-color: #ebe834;");
         Button btExit = new Button("Exit");
+        btExit.setStyle("-fx-background-color: #f50529;");
         btExit.setPrefWidth(200);
-
+        grid.getChildren().add(0,rectangle);
         grid.add(label, 0, 1);
         grid.add(btConnect, 0, 2);
         grid.add(btExit, 0,3);
+        grid.getChildren().add(1,circle1);
+        grid.getChildren().add(2,circle2);
+        grid.getChildren().add(1,circle3);
+        grid.getChildren().add(2,circle4);
+
+
 
         Scene menu = new Scene(grid, SCREEN_WIDTH, SCREEN_HEIGHT);
         // TODO: Should constantly read in requests from the server and handle them (like server sending a new board or telling you its your turn)
