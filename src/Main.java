@@ -37,21 +37,23 @@ public class Main extends Application {
     final private int cell_Y = 96;
     private GridPane playerBoard = new GridPane();
     public String sendToServer;
+    Group group = new Group();
 
     Socket s;
-    Board board;
+    Board board = new Board();
 //    BufferedReader in;
 //    PrintWriter out;
     DataInputStream in;
     DataOutputStream out;
     ObjectInputStream boardIn;
     String [][] currentBoard = new String[8][8];
-    Scene game;
+    Scene game = new Scene(group, SCREEN_WIDTH, SCREEN_HEIGHT);
 
     @Override
     public void start(Stage primaryStage) throws Exception{
+        board.initialize();
+        currentBoard = board.getBoard();
         //Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
-        Group group = new Group();
         //StackPane background = new StackPane();
         //Canvas canvas = new Canvas(SCREEN_WIDTH, SCREEN_HEIGHT);
         //GraphicsContext gc = canvas.getGraphicsContext2D();
@@ -85,9 +87,24 @@ public class Main extends Application {
         Thread serverIn = new Thread(() -> {
             while (true) {
                 try {
-                    out = new DataOutputStream(s.getOutputStream());
-                    in = new DataInputStream(s.getInputStream());
-                    out.writeUTF(sendToServer);
+
+
+                    boardIn = new ObjectInputStream(s.getInputStream());
+
+                    currentBoard = (String[][]) boardIn.readObject();
+                    System.out.println(Arrays.deepToString(currentBoard));
+                    Platform.runLater(new Runnable() {
+                        @Override
+                        public void run() {
+                            System.out.println("STUCK");
+                            group.getChildren().clear();
+                            playerBoard.getChildren().clear();
+                            initPlayerBoard();
+                            group.getChildren().add(playerBoard);
+                        }
+                    });
+
+
 //                    break;
 //                    String request = "";
 //                    request = in.readLine();
@@ -106,6 +123,15 @@ public class Main extends Application {
                     if( node instanceof Rectangle) {
                         if( node.getBoundsInParent().contains(e.getSceneX(),  e.getSceneY())) {
                             sendToServer = GridPane.getRowIndex(node) + " " + GridPane.getColumnIndex(node);
+                            try {
+                                out = new DataOutputStream(s.getOutputStream());
+                                out.writeUTF(sendToServer);
+                                out.flush();
+                            } catch (IOException ioException) {
+                                ioException.printStackTrace();
+                            }
+
+
                             System.out.println("x : " + GridPane.getRowIndex(node) + " y : " + GridPane.getColumnIndex(node));
                         }
                     }
@@ -117,20 +143,18 @@ public class Main extends Application {
             try {
                 s = new Socket(HOST, PORT);
 //                objOut = new ObjectOutputStream(s.getOutputStream());
-                boardIn = new ObjectInputStream(s.getInputStream());
-                out = new DataOutputStream(s.getOutputStream());
+//                boardIn = new ObjectInputStream(s.getInputStream());
+//                out = new DataOutputStream(s.getOutputStream());
 //                out = new PrintWriter(s.getOutputStream());
 //                System.out.println(in.readLine());
 //                currentBoard = ((Board) objIn.readObject());
 //                serverIn.start();
 
                 // CURRENTLY GETS BOARD WITHOUT THREAD, JUST NEEDS TO BE IN THREAD NOW, BUT GETS BOARD FROM SERVER
-                currentBoard = (String[][]) boardIn.readObject();
-                System.out.println(Arrays.deepToString(currentBoard));
                 initPlayerBoard();
                 group.getChildren().add(playerBoard);
-                game = new Scene(group, SCREEN_WIDTH, SCREEN_HEIGHT);
-//                System.out.println(currentBoard);
+
+//                game = new Scene(group, SCREEN_WIDTH, SCREEN_HEIGHT);
                 primaryStage.setScene(game);
                 serverIn.start();
             } catch(ConnectException ce) {
@@ -209,8 +233,7 @@ public class Main extends Application {
 //        playerBoard.setPrefSize(8,8);
 //        playerBoard.setLayoutX(8);
 //        playerBoard.setLayoutY(8);
-        playerBoard.getChildren().removeAll();
-        playerBoard.setBackground(Background.EMPTY);
+        playerBoard.getChildren().clear();
         for(int x = 0; x < 8; x++){
             for (int y = 0;y < 8; y++){
                 Rectangle tile = new Rectangle(cell_X,cell_Y);

@@ -15,15 +15,20 @@ public class Server {
         Socket s1 = ss.accept();
         Player p1 = new Player(s1);
         System.out.println("Player 1 found");
-        sendBoardData(board,s1);
+
         while(true){ // temporary, wanted to see if board would update based on client
-            DataOutputStream out = new DataOutputStream(s1.getOutputStream());
+//            sendBoardData(board,s1);
+            ObjectOutputStream output = new ObjectOutputStream(s1.getOutputStream());
             DataInputStream in = new DataInputStream(s1.getInputStream());
+//            DataOutputStream out = new DataOutputStream(s1.getOutputStream());
             int x = Integer.parseInt(in.readUTF().split(" ")[0]);
             int y = Integer.parseInt(in.readUTF().split(" ")[1]);
             System.out.println("x : " + x + " y : " + y);
-            board.getBoard()[y][x] = "X";
+            board.getBoard()[x][y] = "X";
+            output.writeObject(board.getBoard());
+            output.flush();
             System.out.println(board);
+
         }
 //        Socket s2 = ss.accept();
 //        Player p2 = new Player(s2);
@@ -39,7 +44,7 @@ public class Server {
 //            ObjectInputStream input = new ObjectInputStream(p.getInputStream());
 
             output.writeObject(board.getBoard());
-//            output.close();
+//            output.flush();
         }catch(IOException e){
             e.printStackTrace();
         }
