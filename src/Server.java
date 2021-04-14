@@ -1,14 +1,19 @@
 import java.io.*;
+import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketAddress;
 
 public class Server {
 
     private static final int PORT = 1234;
+    private static final String hostName = "localhost";
 
     public static void main(String[] args) throws IOException {
 
-        ServerSocket ss = new ServerSocket(PORT);
+        ServerSocket ss = new ServerSocket();
+        SocketAddress add = new InetSocketAddress(hostName, PORT);
+        ss.bind(add);
         Board board = new Board();
         board.initialize();
         System.out.println("Waiting for players");
