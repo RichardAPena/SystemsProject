@@ -8,10 +8,9 @@ public class Server {
 
     private static final int PORT = 1234;
     private static final String hostName = "localhost";
-    static volatile Board board = new Board();
 
     public static void main(String[] args) throws IOException {
-
+        Board board = new Board();
         ServerSocket ss = new ServerSocket();
         SocketAddress add = new InetSocketAddress(hostName, PORT);
         ss.bind(add);
@@ -20,23 +19,27 @@ public class Server {
         Socket s1 = ss.accept();
         Player p1 = new Player(s1);
         System.out.println("Player 1 found");
-        Socket s2 = ss.accept();
-        Player p2 = new Player(s2);
-        System.out.println("Player 2 found");
+//        Socket s2 = ss.accept();
+//        Player p2 = new Player(s2);
+//        System.out.println("Player 2 found");
 
 //        sendBoardData(board,s2);
         System.out.println("Created board");
 //        System.out.println("Game done");
+        ObjectOutputStream outputPlayer1 = new ObjectOutputStream(s1.getOutputStream());
+        DataInputStream inputPlayer1 = new DataInputStream(s1.getInputStream());
+//        ObjectOutputStream outputPlayer2 = new ObjectOutputStream(s2.getOutputStream());
+//        DataInputStream inputPlayer2 = new DataInputStream(s2.getInputStream());
+        Thread player1 = new ClientThread(s1,outputPlayer1,inputPlayer1,board,"X");
+//        Thread player2 = new ClientThread(s2,outputPlayer2,inputPlayer2,board,"O");
+//        player2.start();
+        player1.start();
+        //TODO : Only recoginizes one write on thread, but if ran with code below user can fill board with clicks,
+        // yet the thread handles it the same way and doesnt work
         while(true){ // temporary, wanted to see if board would update based on client
 //            sendBoardData(board,s1);
-            ObjectOutputStream outputPlayer1 = new ObjectOutputStream(s1.getOutputStream());
-            DataInputStream inputPlayer1 = new DataInputStream(s1.getInputStream());
-            ObjectOutputStream outputPlayer2 = new ObjectOutputStream(s2.getOutputStream());
-            DataInputStream inputPlayer2 = new DataInputStream(s2.getInputStream());
-            Thread player1 = new ClientThread(s1,outputPlayer1,inputPlayer1,board,"X");
-            Thread player2 = new ClientThread(s2,outputPlayer2,inputPlayer2,board,"O");
-            player1.start();
-            player2.start();
+
+
 //            int xP1 = Integer.parseInt(inputPlayer1.readUTF().split(" ")[0]);
 //            int yP1 = Integer.parseInt(inputPlayer1.readUTF().split(" ")[1]);
 //            int xP2 = Integer.parseInt(inputPlayer2.readUTF().split(" ")[0]);
@@ -52,7 +55,7 @@ public class Server {
 //            outputPlayer1.flush();
 //            outputPlayer2.writeObject(board.getBoard());
 //            outputPlayer2.flush();
-            System.out.println(board);
+//            System.out.println(board);
 
         }
 
@@ -88,14 +91,17 @@ class ClientThread extends Thread{
     @Override
     public void run() {
         while (true){
+
             try{
                 int x = Integer.parseInt(input.readUTF().split(" ")[0]);
                 int y = Integer.parseInt(input.readUTF().split(" ")[1]);
+                System.out.println("x : " + x + " y : " + y);
+
                 board.getBoard()[x][y] = player;
                 output.writeObject(board.getBoard());
                 output.flush();
-
-            }catch(Exception e){
+//                output.reset();
+            }catch(IOException e){
                 e.printStackTrace();
             }
         }
