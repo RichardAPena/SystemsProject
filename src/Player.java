@@ -29,13 +29,14 @@ public class Player extends Thread {
         // Listen to client requests
         while (true) {
             try {
-                if (goNext) {
-                    out.println("YOURTURN");
-                    goNext = false;
-                }
+//                if (goNext) {
+//                    out.println("YOURTURN");
+//                    goNext = false;
+//                }
                 request = in.readLine();
                 System.out.println(piece + ": " + request);
                 if (request.startsWith("MAKEMOVE")) {
+                    System.out.println(request.split(" ")[1] + " " + request.split(" ")[2]);
 
                 } else if (request.startsWith("PASS")) {
 
