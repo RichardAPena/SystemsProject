@@ -24,6 +24,7 @@ public class Player extends Thread {
 
     public void run() {
         // TODO
+        sendMessage(piece);
         String request = "";
         // Listen to client requests
         while (true) {
@@ -43,5 +44,10 @@ public class Player extends Thread {
                 e.printStackTrace();
             }
         }
+    }
+
+    public void sendMessage(String message) {
+        System.out.println("Sending '" + message + "' to " + piece);
+        out.println(message);
     }
 }

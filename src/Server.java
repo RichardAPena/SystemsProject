@@ -28,6 +28,9 @@ public class Server {
         p2.opponnent = p1;
         p1.start();
         p2.start();
+        p1.sendMessage("X");
+        p2.sendMessage("O");
+        p1.sendMessage("YOURTURN");
         System.out.println("idk");
 
 
