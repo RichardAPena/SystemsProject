@@ -36,7 +36,11 @@ public class Player extends Thread {
                 request = in.readLine();
                 System.out.println(piece + ": " + request);
                 if (request.startsWith("MAKEMOVE")) {
-                    System.out.println(request.split(" ")[1] + " " + request.split(" ")[2]);
+                    int x  = Integer.parseInt(request.split(" ")[1]);
+                    int y  = Integer.parseInt(request.split(" ")[2]);
+                    System.out.println(x + " " + y);
+                    board.getBoard()[x][y] = piece;
+                    System.out.println(board);
 
                 } else if (request.startsWith("PASS")) {
 
