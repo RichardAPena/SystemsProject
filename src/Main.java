@@ -129,6 +129,9 @@ public class Main extends Application {
                         piece = "X";
                     } else if (request.equals("O")) {
                         piece = "O";
+                    } else if (request.contains("GAMEOVER")) {
+                        System.out.println("Game over!");
+                        break;
                     }
 
                 } catch (Exception e) {
@@ -142,6 +145,10 @@ public class Main extends Application {
                 while (true) {
                     Thread.sleep(1000/60);
                     draw(gc);
+                    if (yourTurn && board.numValidMoves(piece) == 0) {
+                        out.println("PASS");
+                        yourTurn = false;
+                    }
                 }
             } catch (Exception e) { e.printStackTrace(); }
         });
