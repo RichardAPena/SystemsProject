@@ -24,8 +24,8 @@ You will need Java 11, you can download it here oracle.com/ca-en/java/technologi
 packages to run the application.
 6. Go to run and edit configurations, create 2 running applications, one for the Main Class and one for the Server Class, 
 make sure you use VM options and include the packages.
-In your VM options make sure to put this line ( DO NOT INCLUDE " " ):
+7. In your VM options make sure to put this line ( DO NOT INCLUDE " " ):
 -p "Replace this with path to jdk/lib" --add-modules javafx.controls,javafx.fxml
 =======
-7. Run the Server class first, followed by the Main class.
-8. Click the 'connect' button in order to connect to the server and start playing the game.
+8. Run the Server class first, followed by the Main class.
+9. Click the 'connect' button in order to connect to the server and start playing the game.
