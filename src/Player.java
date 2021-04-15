@@ -8,10 +8,12 @@ public class Player extends Thread {
 
     private BufferedReader in;
     private PrintWriter out;
+    private PrintWriter opponentOut;
     private Board board;
     Player opponnent;
     private boolean goNext;
     private String piece;
+    private String opponentPiece;
     private Socket playerSocket;
     private Socket opponentSocket;
 
@@ -23,14 +25,22 @@ public class Player extends Thread {
         this.piece = piece;
         goNext = piece.equals("X");
     }
-    public void setOpponent(Player p){
-        this.opponnent = p;
+    public void setOpponent(Socket p) throws IOException {
+        this.opponentSocket = p;
+        System.out.println(getOpponentSocket().isConnected());
+        opponentOut = new PrintWriter(getOpponentSocket().getOutputStream());
+        if (piece.equals("X")){
+            opponentPiece = "O";
+        }else{
+            opponentPiece = "X";
+        }
+
     }
     public Socket getPlayerSocket(){
         return this.playerSocket;
     }
     public Socket getOpponentSocket(){
-        return this.opponnent.getPlayerSocket();
+        return this.opponentSocket;
     }
     public void run() {
         // TODO
@@ -51,7 +61,6 @@ public class Player extends Thread {
                     System.out.println(x + " " + y);
                     board.getBoard()[x][y] = piece;
                     try{
-                        PrintWriter opponentOut = new PrintWriter(getOpponentSocket().getOutputStream());
                         opponentOut.println("MAKEMOVE" +" "+ piece + " " + x + " " + y);
                         opponentOut.flush();
                     }catch(Exception e){

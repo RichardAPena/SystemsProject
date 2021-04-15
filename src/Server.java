@@ -7,30 +7,31 @@ import java.net.SocketAddress;
 public class Server {
 
     private static final int PORT = 1234;
-    //private static final String hostName = "localhost";
+    private static final String hostName = "localhost";
 
     public static void main(String[] args) throws IOException {
         Board board = new Board();
         board.initialize();
         System.out.println("Created board");
 
-        ServerSocket ss = new ServerSocket(PORT);
-        //SocketAddress add = new InetSocketAddress(hostName, PORT);
-        //ss.bind(add);
+        ServerSocket ss = new ServerSocket();
+        SocketAddress add = new InetSocketAddress(hostName, PORT);
+        ss.bind(add);
+
         System.out.println("Waiting for players");
         Socket s1 = ss.accept();
         System.out.println("Player 1 found");
-//        Socket s2 = ss.accept();
-//        System.out.println("Player 2 found");
+        Socket s2 = ss.accept();
+        System.out.println("Player 2 found");
         Player p1 = new Player(s1, board, "X");
-//        Player p2 = new Player(s2, board, "O");
-//        p1.opponnent = p2;
-//        p2.opponnent = p1;
+        Player p2 = new Player(s2, board, "O");
+        p1.setOpponent(s1);
+        p2.setOpponent(s2);
 //        p1.sendMessage("X");
 //        p2.sendMessage("O");
 //        p1.sendMessage("YOURTURN");
         p1.start();
-//        p2.start();
+        p2.start();
         System.out.println("idk");
 
 
