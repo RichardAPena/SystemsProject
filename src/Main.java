@@ -124,6 +124,8 @@ public class Main extends Application {
                         yourTurn = true;
 
                     }else if (request.split(" ")[0].equals("MAKEMOVE")) { // Syntax: MAKEMOVE X 2 3
+
+                        // if the opponent made a move, now your turn
                         if (request.split(" ")[request.split(" ").length-1].equals("YOURTURN")){
                             yourTurn = true;
                         }
@@ -209,7 +211,7 @@ public class Main extends Application {
 //                board.makeMove(piece, (int) boardX, (int) boardY);
 //                yourTurn = false;
 //            }
-            if(yourTurn){
+            if(yourTurn){ // isValidMove breaks the game for some reason though the logic seems right
                 out.println("MAKEMOVE" + " " + piece + " " + (int) boardX + " " + (int) boardY);
                 out.flush();
                 board.makeMove(piece, (int) boardX, (int) boardY);
