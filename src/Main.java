@@ -22,7 +22,7 @@ public class Main extends Application {
 
     //FIELDS
     final private int PORT = 1234;
-    final private String HOST = "10.0.0.104";
+    final private String HOST = "localhost";
     final private int SCREEN_WIDTH = 1024;
     final private int SCREEN_HEIGHT = 768;
 
@@ -120,9 +120,13 @@ public class Main extends Application {
                     System.out.println(request);
                     if (request.equals("GAMEOVER")) {
                         break;
-                    } else if (request.split(" ")[request.split(" ").length-1].equals("YOURTURN")) {
+                    }else if(request.startsWith("YOURTURN")){
                         yourTurn = true;
-                    } else if (request.contains("MAKEMOVE")) { // Syntax: MAKEMOVE X 2 3
+
+                    }else if (request.split(" ")[0].equals("MAKEMOVE")) { // Syntax: MAKEMOVE X 2 3
+                        if (request.split(" ")[request.split(" ").length-1].equals("YOURTURN")){
+                            yourTurn = true;
+                        }
                         String[] requestArr = request.split(" ");
                         board.makeMove(requestArr[1], Integer.parseInt(requestArr[2]), Integer.parseInt(requestArr[3]));
                     } else if (request.equals("X")) {
@@ -145,10 +149,10 @@ public class Main extends Application {
                 while (true) {
                     Thread.sleep(1000/60);
                     draw(gc);
-                    if (yourTurn && board.numValidMoves(piece) == 0) {
-                        out.println("PASS");
-                        yourTurn = false;
-                    }
+//                    if (yourTurn && board.numValidMoves(piece) == 0) {
+//                        out.println("PASS");
+//                        yourTurn = false;
+//                    }
                 }
             } catch (Exception e) { e.printStackTrace(); }
         });
@@ -189,8 +193,8 @@ public class Main extends Application {
             double mouseY = mouseEvent.getY();
             System.out.println("Clicked: " + mouseX + " " + mouseY);
             System.out.println();
-            double boardX = -1;
-            double boardY = -1;
+            double boardX = 0;
+            double boardY = 0;
             if (mouseX >= 100 && mouseX <= gc.getCanvas().getWidth()-100 && mouseY >= 100 && mouseY <= 700) {
                 boardX = (mouseX - 100) / (gc.getCanvas().getWidth()-200) * 8;
                 boardY = (mouseY - 100) / 600 * 8;
@@ -199,12 +203,19 @@ public class Main extends Application {
 
             // TODO: send server message if yourTurn == true and set yourTurn to false
             System.out.println("MAKEMOVE" + " " + piece + " " + (int) boardX + " " + (int) boardY);
-            if (board.isValidMove(piece, (int) boardX, (int) boardY) && yourTurn) {
+//            if (board.isValidMove(piece, (int) boardX, (int) boardY)) {
+//                out.println("MAKEMOVE" + " " + piece + " " + (int) boardX + " " + (int) boardY);
+//                out.flush();
+//                board.makeMove(piece, (int) boardX, (int) boardY);
+//                yourTurn = false;
+//            }
+            if(yourTurn){
                 out.println("MAKEMOVE" + " " + piece + " " + (int) boardX + " " + (int) boardY);
                 out.flush();
                 board.makeMove(piece, (int) boardX, (int) boardY);
                 yourTurn = false;
             }
+
         };
 
         game.addEventFilter(MouseEvent.MOUSE_CLICKED, mouseClick);
