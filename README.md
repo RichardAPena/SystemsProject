@@ -28,6 +28,5 @@ In your VM options make sure to put this line ( DO NOT INCLUDE " " ):
 
 -p "Replace this with path to jdk/lib" --add-modules javafx.controls,javafx.fxml
 =======
-
 7. Run the Server class first, followed by the Main class.
 8. Click the 'connect' button in order to connect to the server and start playing the game.
