@@ -25,8 +25,8 @@ public class Server {
         System.out.println("Player 2 found");
         Player p1 = new Player(s1, board, "X");
         Player p2 = new Player(s2, board, "O");
-        p1.setOpponent(s1);
-        p2.setOpponent(s2);
+        p1.setOpponent(s2);
+        p2.setOpponent(s1);
 //        p1.sendMessage("X");
 //        p2.sendMessage("O");
 //        p1.sendMessage("YOURTURN");
