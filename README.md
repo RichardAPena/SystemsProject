@@ -33,6 +33,4 @@ In your VM options make sure to put this line:
 4. Open up our repository in an IDE of your choice, this tutorial will use Intellij.
 5. Click File and edit project structure, make the language Java 11 and make sure you have the required packages to run the application.
 6. Go to run and edit configurations, create 2 running applications, one for the Main Class and one for the Server Class, make sure you use VM options and include the packages.
->>>>>>> f2e9a655d1d3339d81d4679bbb26e6f52b716fca
-7. Run the Server class first, followed by the Main class.
-8. Click the 'connect' button in order to connect to the server and start playing the game.
+
