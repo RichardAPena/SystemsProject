@@ -192,9 +192,12 @@ public class Main extends Application {
 
             // TODO: send server message if yourTurn == true and set yourTurn to false
             System.out.println("MAKEMOVE" + " " + piece + " " + (int) boardX + " " + (int) boardY);
+            if (board.isValidMove(piece, (int) boardX, (int) boardY) && yourTurn) {
             out.println("MAKEMOVE" + " " + piece + " " + (int) boardX + " " + (int) boardY);
             out.flush();
             board.makeMove(piece, (int) boardX, (int) boardY);
+            yourTurn = false;
+            }
         };
 
         game.addEventFilter(MouseEvent.MOUSE_CLICKED, mouseClick);

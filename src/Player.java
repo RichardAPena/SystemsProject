@@ -18,6 +18,7 @@ public class Player extends Thread {
     private Socket opponentSocket;
 
     public Player(Socket player, Board board, String piece) throws IOException {
+        playerSocket = player;
         in = new BufferedReader(new InputStreamReader(player.getInputStream()));
         out = new PrintWriter(player.getOutputStream());
         this.board = board;
@@ -36,7 +37,7 @@ public class Player extends Thread {
         }
 
     }
-    public Socket getPlayerSocket(){
+    public Socket getPlayerSocket() {
         return this.playerSocket;
     }
     public Socket getOpponentSocket(){
