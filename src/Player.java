@@ -12,16 +12,26 @@ public class Player extends Thread {
     Player opponnent;
     private boolean goNext;
     private String piece;
+    private Socket playerSocket;
+    private Socket opponentSocket;
 
     public Player(Socket player, Board board, String piece) throws IOException {
         in = new BufferedReader(new InputStreamReader(player.getInputStream()));
         out = new PrintWriter(player.getOutputStream());
         this.board = board;
-        //this.opponnent = opponent;
+
         this.piece = piece;
         goNext = piece.equals("X");
     }
-
+    public void setOpponent(Player p){
+        this.opponnent = p;
+    }
+    public Socket getPlayerSocket(){
+        return this.playerSocket;
+    }
+    public Socket getOpponentSocket(){
+        return this.opponnent.getPlayerSocket();
+    }
     public void run() {
         // TODO
         sendMessage(piece);
@@ -40,7 +50,13 @@ public class Player extends Thread {
                     int y  = Integer.parseInt(request.split(" ")[3]);
                     System.out.println(x + " " + y);
                     board.getBoard()[x][y] = piece;
-                    System.out.println(board);
+                    try{
+                        PrintWriter opponentOut = new PrintWriter(getOpponentSocket().getOutputStream());
+                        opponentOut.println("MAKEMOVE" +" "+ piece + " " + x + " " + y);
+                        opponentOut.flush();
+                    }catch(Exception e){
+                        e.printStackTrace();
+                    }
 
                 } else if (request.startsWith("PASS")) {
 
