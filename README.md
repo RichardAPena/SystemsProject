@@ -18,6 +18,8 @@ when one player controls the most area, or the other player cannot make anymore 
 
 How to run:
 Here are the steps to run our application.
+You will need Java 11, you can download it here oracle.com/ca-en/java/technologies/javase-jdk11-downloads.html
+
 1. Open up a terminal of your choice such as cmd.
 2. You will then navigate to a folder you wish to clone our project using the terminal. 
 3. Type git clone and then the link to our github page. The repository wil now be on your computer.
@@ -26,6 +28,8 @@ Here are the steps to run our application.
 packages to run the application.
 6. Go to run and edit configurations, create 2 running applications, one for the Main Class and one for the Server Class, 
 make sure you use VM options and include the packages.
+In your VM options make sure to put this line:
+--module-path "Replace this with path to jdk/lib" --add-modules javafx.controls,javafx.fxml
 7. Run the Server class first, followed by the Main class.
 8. Click connect to connect the classes and start playing the game.
 
