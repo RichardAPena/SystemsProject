@@ -22,7 +22,7 @@ public class Main extends Application {
 
     //FIELDS
     final private int PORT = 1234;
-    final private String HOST = "localhost";
+    final private String HOST = "10.0.0.104";
     final private int SCREEN_WIDTH = 1024;
     final private int SCREEN_HEIGHT = 768;
 
@@ -120,7 +120,7 @@ public class Main extends Application {
                     System.out.println(request);
                     if (request.equals("GAMEOVER")) {
                         break;
-                    } else if (request.equals("YOURTURN")) {
+                    } else if (request.split(" ")[request.split(" ").length-1].equals("YOURTURN")) {
                         yourTurn = true;
                     } else if (request.contains("MAKEMOVE")) { // Syntax: MAKEMOVE X 2 3
                         String[] requestArr = request.split(" ");
@@ -193,10 +193,10 @@ public class Main extends Application {
             // TODO: send server message if yourTurn == true and set yourTurn to false
             System.out.println("MAKEMOVE" + " " + piece + " " + (int) boardX + " " + (int) boardY);
             if (board.isValidMove(piece, (int) boardX, (int) boardY) && yourTurn) {
-            out.println("MAKEMOVE" + " " + piece + " " + (int) boardX + " " + (int) boardY);
-            out.flush();
-            board.makeMove(piece, (int) boardX, (int) boardY);
-            yourTurn = false;
+                out.println("MAKEMOVE" + " " + piece + " " + (int) boardX + " " + (int) boardY);
+                out.flush();
+                board.makeMove(piece, (int) boardX, (int) boardY);
+                yourTurn = false;
             }
         };
 

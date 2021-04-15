@@ -62,7 +62,7 @@ public class Player extends Thread {
                     System.out.println(x + " " + y);
                     board.getBoard()[x][y] = piece;
                     try{
-                        opponentOut.println("MAKEMOVE" +" "+ piece + " " + x + " " + y);
+                        opponentOut.println("MAKEMOVE" +" "+ piece + " " + x + " " + y + " " + "YOURTURN");
                         opponentOut.flush();
                     }catch(Exception e){
                         e.printStackTrace();
