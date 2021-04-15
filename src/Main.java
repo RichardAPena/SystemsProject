@@ -129,6 +129,9 @@ public class Main extends Application {
                         piece = "X";
                     } else if (request.equals("O")) {
                         piece = "O";
+                    } else if (request.contains("GAMEOVER")) {
+                        System.out.println("Game over!");
+                        break;
                     }
 
                 } catch (Exception e) {
@@ -142,6 +145,10 @@ public class Main extends Application {
                 while (true) {
                     Thread.sleep(1000/60);
                     draw(gc);
+                    if (yourTurn && board.numValidMoves(piece) == 0) {
+                        out.println("PASS");
+                        yourTurn = false;
+                    }
                 }
             } catch (Exception e) { e.printStackTrace(); }
         });
@@ -228,9 +235,15 @@ public class Main extends Application {
 
         gc.setFill(Color.BLACK);
         gc.setLineWidth(10);
-        gc.fillText("X turn", 100, 50);
-        gc.fillText("X score: " + board.getScore("X"), 200, 25);
-        gc.fillText("O score: " + board.getScore("O"), 200, 50);
+        gc.fillText("Othello", 100, 20);
+        String turn = "Opponent's turn";
+        if (yourTurn)
+            turn = "Your turn";
+
+        gc.fillText(turn, 100, 50);
+
+        gc.fillText("Black score: " + board.getScore("X"), 300, 25);
+        gc.fillText("White score: " + board.getScore("O"), 300, 50);
 
         // Draw board background
         gc.setFill(Color.DARKGREEN);
