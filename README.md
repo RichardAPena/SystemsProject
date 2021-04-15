@@ -24,13 +24,8 @@ You will need Java 11, you can download it here oracle.com/ca-en/java/technologi
 packages to run the application.
 6. Go to run and edit configurations, create 2 running applications, one for the Main Class and one for the Server Class, 
 make sure you use VM options and include the packages.
-In your VM options make sure to put this line:
---module-path "Replace this with path to jdk/lib" --add-modules javafx.controls,javafx.fxml
+7. In your VM options make sure to put this line ( DO NOT INCLUDE " " ):
+-p "Replace this with path to jdk/lib" --add-modules javafx.controls,javafx.fxml
 =======
-1. Open up a terminal of your choice such as command prompt.
-2. Navigate to a folder you wish to clone our project to using the terminal.
-3. Type git clone and then the link to our github page. The copy of our repository wil now be on your computer.
-4. Open up our repository in an IDE of your choice, this tutorial will use Intellij.
-5. Click File and edit project structure, make the language Java 11 and make sure you have the required packages to run the application.
-6. Go to run and edit configurations, create 2 running applications, one for the Main Class and one for the Server Class, make sure you use VM options and include the packages.
-
+8. Run the Server class first, followed by the Main class.
+9. Click the 'connect' button in order to connect to the server and start playing the game.
