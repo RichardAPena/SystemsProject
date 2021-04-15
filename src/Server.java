@@ -20,14 +20,18 @@ public class Server {
         System.out.println("Waiting for players");
         Socket s1 = ss.accept();
         System.out.println("Player 1 found");
-        Socket s2 = ss.accept();
-        System.out.println("Player 2 found");
+//        Socket s2 = ss.accept();
+//        System.out.println("Player 2 found");
         Player p1 = new Player(s1, board, "X");
-        Player p2 = new Player(s2, board, "O");
-        p1.opponnent = p2;
-        p2.opponnent = p1;
-
-
+//        Player p2 = new Player(s2, board, "O");
+//        p1.opponnent = p2;
+//        p2.opponnent = p1;
+//        p1.sendMessage("X");
+//        p2.sendMessage("O");
+//        p1.sendMessage("YOURTURN");
+        p1.start();
+//        p2.start();
+        System.out.println("idk");
 
 
 
@@ -54,14 +58,14 @@ public class Server {
 
 //        sendBoardData(board,s2);
 //        System.out.println("Game done");
-        ObjectOutputStream outputPlayer1 = new ObjectOutputStream(s1.getOutputStream());
-        DataInputStream inputPlayer1 = new DataInputStream(s1.getInputStream());
+//        ObjectOutputStream outputPlayer1 = new ObjectOutputStream(s1.getOutputStream());
+//        DataInputStream inputPlayer1 = new DataInputStream(s1.getInputStream());
 //        ObjectOutputStream outputPlayer2 = new ObjectOutputStream(s2.getOutputStream());
 //        DataInputStream inputPlayer2 = new DataInputStream(s2.getInputStream());
-        Thread player1 = new ClientThread(s1,outputPlayer1,inputPlayer1,board,"X");
+//        Thread player1 = new ClientThread(s1,outputPlayer1,inputPlayer1,board,"X");
 //        Thread player2 = new ClientThread(s2,outputPlayer2,inputPlayer2,board,"O");
 //        player2.start();
-        player1.start();
+//        player1.start();
         //TODO : Only recoginizes one write on thread, but if ran with code below user can fill board with clicks,
         // yet the thread handles it the same way and doesnt work
 //        while(true){ // temporary, wanted to see if board would update based on client

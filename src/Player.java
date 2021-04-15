@@ -24,16 +24,23 @@ public class Player extends Thread {
 
     public void run() {
         // TODO
-        String request = "";
+        sendMessage(piece);
         // Listen to client requests
         while (true) {
+            String request = "";
             try {
-                if (goNext) {
-                    out.println("YOURTURN");
-                    goNext = false;
-                }
+//                if (goNext) {
+//                    out.println("YOURTURN");
+//                    goNext = false;
+//                }
                 request = in.readLine();
+                System.out.println(piece + ": " + request);
                 if (request.startsWith("MAKEMOVE")) {
+                    int x  = Integer.parseInt(request.split(" ")[2]);
+                    int y  = Integer.parseInt(request.split(" ")[3]);
+                    System.out.println(x + " " + y);
+                    board.getBoard()[x][y] = piece;
+                    System.out.println(board);
 
                 } else if (request.startsWith("PASS")) {
 
@@ -42,5 +49,11 @@ public class Player extends Thread {
                 e.printStackTrace();
             }
         }
+    }
+
+    public void sendMessage(String message) {
+        System.out.println("Sending '" + message + "' to " + piece);
+        out.println(message);
+        out.flush();
     }
 }
