@@ -113,8 +113,8 @@ public class Main extends Application {
         // TODO: Should constantly read in requests from the server and handle them (like server sending a new board or telling you its your turn)
         Thread serverIn = new Thread(() -> {
             System.out.println("Started serverIn thread");
-            String request = "";
             while (true) {
+                String request = "";
                 try {
                     request = in.readLine();
                     System.out.println(request);
@@ -136,7 +136,15 @@ public class Main extends Application {
                 }
             }
         });
-
+        // Draws board 60 times per second
+        Thread drawBoard = new Thread(() -> {
+            try {
+                while (true) {
+                    Thread.sleep(1000/60);
+                    draw(gc);
+                }
+            } catch (Exception e) { e.printStackTrace(); }
+        });
         // Connect to server button
         btConnect.setOnAction(actionEvent -> {
             System.out.println("Connecting...");
@@ -145,8 +153,10 @@ public class Main extends Application {
                 in = new BufferedReader(new InputStreamReader(s.getInputStream()));
                 out = new PrintWriter(s.getOutputStream());
 
-                System.out.println(in.readLine()); // TODO
+//                System.out.println(in.readLine()); // TODO
                 primaryStage.setScene(game);
+                serverIn.start();
+                drawBoard.start();
             } catch(ConnectException ce) {
                 connection.setText("Could not connect to the server");
                 System.out.println("Could not connect to the server.");
@@ -164,15 +174,7 @@ public class Main extends Application {
             Platform.exit();
         });
 
-        // Draws board 60 times per second
-        Thread drawBoard = new Thread(() -> {
-            try {
-                while (true) {
-                    Thread.sleep(1000/60);
-                    draw(gc);
-                }
-            } catch (Exception e) { e.printStackTrace(); }
-        });
+
 
         // Handle moves and server communication
         EventHandler<MouseEvent> mouseClick = mouseEvent -> {
@@ -191,13 +193,13 @@ public class Main extends Application {
             // TODO: send server message if yourTurn == true and set yourTurn to false
             System.out.println("MAKEMOVE" + " " + piece + " " + (int) boardX + " " + (int) boardY);
             out.println("MAKEMOVE" + " " + piece + " " + (int) boardX + " " + (int) boardY);
+            out.flush();
             board.makeMove(piece, (int) boardX, (int) boardY);
         };
 
         game.addEventFilter(MouseEvent.MOUSE_CLICKED, mouseClick);
 
-        drawBoard.start();
-        serverIn.start();
+
         primaryStage.setTitle("Othello");
         primaryStage.setScene(menu);
         primaryStage.setMinWidth(SCREEN_WIDTH);

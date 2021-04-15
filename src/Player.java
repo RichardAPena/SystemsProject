@@ -25,9 +25,9 @@ public class Player extends Thread {
     public void run() {
         // TODO
         sendMessage(piece);
-        String request = "";
         // Listen to client requests
         while (true) {
+            String request = "";
             try {
 //                if (goNext) {
 //                    out.println("YOURTURN");
@@ -36,8 +36,8 @@ public class Player extends Thread {
                 request = in.readLine();
                 System.out.println(piece + ": " + request);
                 if (request.startsWith("MAKEMOVE")) {
-                    int x  = Integer.parseInt(request.split(" ")[1]);
-                    int y  = Integer.parseInt(request.split(" ")[2]);
+                    int x  = Integer.parseInt(request.split(" ")[2]);
+                    int y  = Integer.parseInt(request.split(" ")[3]);
                     System.out.println(x + " " + y);
                     board.getBoard()[x][y] = piece;
                     System.out.println(board);
@@ -54,5 +54,6 @@ public class Player extends Thread {
     public void sendMessage(String message) {
         System.out.println("Sending '" + message + "' to " + piece);
         out.println(message);
+        out.flush();
     }
 }
